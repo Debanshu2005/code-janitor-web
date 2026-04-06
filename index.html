@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Code Janitor — Setup Guide</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0f1117;
+      --surface: #161b27;
+      --border: #1e2a3a;
+      --accent: #3b82f6;
+      --accent2: #7dd3fc;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --green: #22c55e;
+      --yellow: #fbbf24;
+      --red: #f87171;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(15,17,23,0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 32px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo { font-size: 18px; font-weight: 700; color: var(--accent2); }
+    .nav-links { display: flex; gap: 24px; font-size: 14px; color: var(--muted); }
+    .nav-links a { color: var(--muted); }
+    .nav-links a:hover { color: var(--text); text-decoration: none; }
+
+    /* ── Hero ── */
+    .hero {
+      text-align: center;
+      padding: 80px 24px 60px;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .badge {
+      display: inline-block;
+      background: #1e2a3a;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 12px;
+      color: var(--accent2);
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #e2e8f0 0%, #7dd3fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 560px;
+      margin: 0 auto 32px;
+    }
+    .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      padding: 11px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: #2563eb; text-decoration: none; }
+    .btn-outline { background: transparent; color: #fff; border: 1px solid #4a5568; }
+    .btn-outline:hover { background: var(--surface); text-decoration: none; color: #fff; }
+
+    /* ── Section ── */
+    section {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 60px 24px;
+    }
+    section + section { border-top: 1px solid var(--border); }
+    .section-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    h2 { font-size: 1.8rem; font-weight: 700; margin-bottom: 10px; }
+    .section-sub { color: var(--muted); margin-bottom: 32px; font-size: 15px; }
+
+    /* ── Steps ── */
+    .steps { display: flex; flex-direction: column; gap: 20px; }
+    .step {
+      display: flex; gap: 16px; align-items: flex-start;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .step-num {
+      width: 32px; height: 32px; flex-shrink: 0;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: #fff;
+    }
+    .step-body h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+    .step-body p { font-size: 14px; color: var(--muted); }
+    .step-body code {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 7px;
+      font-size: 13px;
+      font-family: "Fira Code", monospace;
+      color: var(--accent2);
+    }
+
+    /* ── Models grid ── */
+    .models-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+    .model-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      transition: border-color 0.15s;
+    }
+    .model-card:hover { border-color: var(--accent); }
+    .model-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .tag-free { background: #14532d; color: #86efac; }
+    .tag-local { background: #1e3a5f; color: #7dd3fc; }
+    .tag-paid { background: #451a03; color: #fcd34d; }
+    .model-card h3 { font-size: 14px; font-weight: 600; margin-bottom: 6px; font-family: monospace; }
+    .model-card p { font-size: 13px; color: var(--muted); }
+    .model-install {
+      margin-top: 12px;
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-family: monospace;
+      color: #86efac;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .copy-btn {
+      background: none; border: none; color: var(--muted);
+      cursor: pointer; font-size: 11px; padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .copy-btn:hover { background: var(--border); color: var(--text); }
+
+    /* ── Provider cards ── */
+    .providers { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .provider-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .provider-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .provider-icon { font-size: 22px; }
+    .provider-header h3 { font-size: 16px; font-weight: 700; }
+    .provider-header .free-badge {
+      margin-left: auto;
+      font-size: 11px; font-weight: 600;
+      background: #14532d; color: #86efac;
+      padding: 2px 8px; border-radius: 10px;
+    }
+    .provider-steps { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .provider-steps li {
+      display: flex; gap: 10px; align-items: flex-start;
+      font-size: 14px; color: var(--muted);
+    }
+    .provider-steps li span:first-child {
+      color: var(--accent); font-weight: 700; flex-shrink: 0;
+    }
+    .provider-link {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 8px 16px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .provider-link:hover { background: #2563eb; text-decoration: none; }
+
+    /* ── Config snippet ── */
+    .config-block {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .config-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 16px;
+      background: #161b27;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px; color: var(--muted);
+    }
+    .config-body {
+      padding: 16px;
+      font-family: "Fira Code", "Cascadia Code", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      white-space: pre;
+      overflow-x: auto;
+      color: #e2e8f0;
+    }
+    .key { color: #7dd3fc; }
+    .val { color: #86efac; }
+    .val-str { color: #fca5a5; }
+
+    /* ── Features ── */
+    .features { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+    .feature {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+    }
+    .feature-icon { font-size: 22px; margin-bottom: 10px; }
+    .feature h3 { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+    .feature p { font-size: 13px; color: var(--muted); }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 24px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    footer a { color: var(--muted); }
+    footer a:hover { color: var(--text); }
+
+    @media (max-width: 600px) {
+      nav { padding: 12px 16px; }
+      .nav-links { display: none; }
+      .hero { padding: 50px 16px 40px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">🧹 Code Janitor</div>
+  <div class="nav-links">
+    <a href="#install">Install</a>
+    <a href="#models">Models</a>
+    <a href="#providers">API Keys</a>
+    <a href="#config">Config</a>
+    <a href="https://github.com/Debanshu2005/code-janitor" target="_blank">GitHub</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="badge">VS Code Extension · Free & Open Source</div>
+  <h1>Code Janitor<br/>Setup Guide</h1>
+  <p>Format, fix, and chat about your code with local AI or cloud providers. Get up and running in minutes.</p>
+  <div class="hero-btns">
+    <a class="btn btn-primary" href="vscode:extension/Debanshu2005.code-janitor">Install in VS Code</a>
+    <a class="btn btn-outline" href="https://github.com/Debanshu2005/code-janitor" target="_blank" style="color:#fff;">View on GitHub</a>
+  </div>
+</div>
+
+<!-- Install -->
+<section id="install">
+  <div class="section-label">Getting Started</div>
+  <h2>Installation</h2>
+  <p class="section-sub">Install the extension and get it running in 3 steps.</p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h3>Install the Extension</h3>
+        <p>Open VS Code, go to the Extensions panel (<code>Ctrl+Shift+X</code>), search for <code>Code Janitor</code> and click Install. Or click the button above to install directly.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h3>Choose an AI Provider</h3>
+        <p>Open the AI Chat panel with <code>Ctrl+Alt+C</code>. Select a provider from the dropdown — <strong>Ollama</strong> for local/offline, <strong>OpenRouter</strong> or <strong>Groq</strong> for free cloud models.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h3>Start Coding</h3>
+        <p>Use <code>Alt+D</code> to format code, <code>Alt+L</code> to lint JavaScript, or open the AI chat and ask anything about your codebase.</p>
+        <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+          <a class="btn btn-primary" href="vscode:extension/Debanshu2005.code-janitor" style="font-size:13px;padding:8px 16px;">Open in VS Code</a>
+          <a class="btn btn-outline" href="vscode:Debanshu2005.code-janitor.openChat" style="font-size:13px;padding:8px 16px;color:#fff;">🤖 Check Models in Chat</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Models -->
+<section id="models">
+  <div class="section-label">Local AI (Ollama)</div>
+  <h2>Recommended Models</h2>
+  <p class="section-sub">Run AI completely offline with <a href="https://ollama.com" target="_blank">Ollama</a>. Install Ollama first, then pull any model below.</p>
+  <div class="models-grid">
+
+    <div class="model-card">
+      <span class="model-tag tag-local">Local · Fast</span>
+      <h3>qwen2.5-coder:1.5b</h3>
+      <p>Lightweight and fast. Great for quick fixes and simple questions on low-end hardware.</p>
+      <div class="model-install">
+        <span>ollama pull qwen2.5-coder:1.5b</span>
+        <button class="copy-btn" onclick="copyCmd(this, 'ollama pull qwen2.5-coder:1.5b')">Copy</button>
+      </div>
+    </div>
+
+    <div class="model-card">
+      <span class="model-tag tag-local">Local · Balanced</span>
+      <h3>qwen2.5-coder:7b</h3>
+      <p>Best balance of speed and quality for coding tasks. Recommended for most users.</p>
+      <div class="model-install">
+        <span>ollama pull qwen2.5-coder:7b</span>
+        <button class="copy-btn" onclick="copyCmd(this, 'ollama pull qwen2.5-coder:7b')">Copy</button>
+      </div>
+    </div>
+
+    <div class="model-card">
+      <span class="model-tag tag-local">Local · Powerful</span>
+      <h3>codellama:7b</h3>
+      <p>Meta's code-focused model. Strong at code generation and explanation.</p>
+      <div class="model-install">
+        <span>ollama pull codellama:7b</span>
+        <button class="copy-btn" onclick="copyCmd(this, 'ollama pull codellama:7b')">Copy</button>
+      </div>
+    </div>
+
+    <div class="model-card">
+      <span class="model-tag tag-local">Local · Large</span>
+      <h3>codellama:13b</h3>
+      <p>More capable version of CodeLlama. Requires ~8GB RAM. Best for complex tasks.</p>
+      <div class="model-install">
+        <span>ollama pull codellama:13b</span>
+        <button class="copy-btn" onclick="copyCmd(this, 'ollama pull codellama:13b')">Copy</button>
+      </div>
+    </div>
+
+    <div class="model-card">
+      <span class="model-tag tag-free">Free · Cloud</span>
+      <h3>qwen3-coder:free</h3>
+      <p>Free OpenRouter model. No local install needed, just an OpenRouter API key.</p>
+      <div class="model-install">
+        <span>via OpenRouter</span>
+      </div>
+    </div>
+
+    <div class="model-card">
+      <span class="model-tag tag-free">Free · Cloud</span>
+      <h3>gemini-2.0-flash:free</h3>
+      <p>Google's fast model via OpenRouter. Excellent instruction following, completely free.</p>
+      <div class="model-install">
+        <span>via OpenRouter</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- API Keys -->
+<section id="providers">
+  <div class="section-label">Cloud Providers</div>
+  <h2>Getting API Keys</h2>
+  <p class="section-sub">Use free cloud models without installing anything locally. Both providers below have generous free tiers.</p>
+  <div class="providers">
+
+    <div class="provider-card">
+      <div class="provider-header">
+        <div class="provider-icon">⚡</div>
+        <h3>Groq</h3>
+        <span class="free-badge">Free Tier</span>
+      </div>
+      <ul class="provider-steps">
+        <li><span>1.</span><span>Go to <a href="https://console.groq.com" target="_blank">console.groq.com</a> and sign up for a free account.</span></li>
+        <li><span>2.</span><span>Navigate to <strong>API Keys</strong> in the sidebar and click <strong>Create API Key</strong>.</span></li>
+        <li><span>3.</span><span>Copy the key, open the Code Janitor chat panel, select <strong>Groq</strong> as provider, and paste it in the API Key field.</span></li>
+        <li><span>4.</span><span>Click <strong>Save</strong>. Your key is stored locally in VS Code settings.</span></li>
+      </ul>
+      <a class="provider-link" href="https://console.groq.com/keys" target="_blank">Get Groq API Key →</a>
+    </div>
+
+    <div class="provider-card">
+      <div class="provider-header">
+        <div class="provider-icon">🌐</div>
+        <h3>OpenRouter</h3>
+        <span class="free-badge">Free Models</span>
+      </div>
+      <ul class="provider-steps">
+        <li><span>1.</span><span>Go to <a href="https://openrouter.ai" target="_blank">openrouter.ai</a> and create a free account.</span></li>
+        <li><span>2.</span><span>Go to <strong>Keys</strong> and click <strong>Create Key</strong>. No credit card needed for free models.</span></li>
+        <li><span>3.</span><span>Copy the key, open the Code Janitor chat panel, select <strong>OpenRouter</strong> as provider, and paste it.</span></li>
+        <li><span>4.</span><span>Pick a model ending in <code>:free</code> from the model dropdown to use at no cost.</span></li>
+      </ul>
+      <a class="provider-link" href="https://openrouter.ai/keys" target="_blank">Get OpenRouter Key →</a>
+    </div>
+
+    <div class="provider-card">
+      <div class="provider-header">
+        <div class="provider-icon">🖥</div>
+        <h3>Ollama (Local)</h3>
+        <span class="free-badge">No Key Needed</span>
+      </div>
+      <ul class="provider-steps">
+        <li><span>1.</span><span>Download and install <a href="https://ollama.com" target="_blank">Ollama</a> for your OS.</span></li>
+        <li><span>2.</span><span>Open a terminal and run <code>ollama pull qwen2.5-coder:7b</code> (or any model above).</span></li>
+        <li><span>3.</span><span>Ollama runs automatically in the background. No API key required.</span></li>
+        <li><span>4.</span><span>In the chat panel, select <strong>Ollama (local)</strong> — it will detect and list your installed models automatically in the model dropdown.</span></li>
+      </ul>
+      <a class="provider-link" href="https://ollama.com/download" target="_blank">Download Ollama →</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- Config -->
+<section id="config">
+  <div class="section-label">Configuration</div>
+  <h2>VS Code Settings</h2>
+  <p class="section-sub">Add these to your <code>settings.json</code> (<code>Ctrl+Shift+P</code> → <em>Open User Settings JSON</em>) to configure the extension manually.</p>
+  <div class="config-block">
+    <div class="config-header">
+      <span>settings.json</span>
+      <button class="copy-btn" onclick="copyConfig(this)">Copy</button>
+    </div>
+    <div class="config-body" id="config-snippet"><span class="key">"codeJanitor.ai.enabled"</span>: <span class="val">true</span>,
+<span class="key">"codeJanitor.ai.provider"</span>: <span class="val-str">"ollama"</span>,        <span style="color:#475569">// "ollama" | "groq" | "openrouter" | "anthropic"</span>
+<span class="key">"codeJanitor.ai.ollamaUrl"</span>: <span class="val-str">"http://localhost:11434"</span>,
+<span class="key">"codeJanitor.ai.model"</span>: <span class="val-str">"qwen2.5-coder:7b"</span>,
+<span class="key">"codeJanitor.ai.timeout"</span>: <span class="val">90000</span>,
+<span class="key">"codeJanitor.autoCorrection.enabled"</span>: <span class="val">true</span>,
+<span class="key">"codeJanitor.autoCorrection.delay"</span>: <span class="val">500</span></div>
+  </div>
+</section>
+
+<!-- Features -->
+<section id="features">
+  <div class="section-label">What's Included</div>
+  <h2>Features</h2>
+  <p class="section-sub">Everything Code Janitor can do out of the box.</p>
+  <div class="features">
+    <div class="feature">
+      <div class="feature-icon">🔧</div>
+      <h3>Auto Format</h3>
+      <p>Format Python, JS, Java, C/C++, and HTML with <code>Alt+D</code> or on save.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">⚡</div>
+      <h3>Real-time Fixes</h3>
+      <p>Auto-corrects syntax errors as you type with a configurable delay.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🤖</div>
+      <h3>AI Chat</h3>
+      <p>Ask questions about your codebase, get fixes, refactors, and docs generated.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">👁</div>
+      <h3>Live Preview</h3>
+      <p>Preview HTML and React files in a live webview panel with <code>Alt+P</code>.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🔍</div>
+      <h3>ESLint Integration</h3>
+      <p>Lint JavaScript files and see issues in the Problems panel with <code>Alt+L</code>.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">✅</div>
+      <h3>Frontend Validator</h3>
+      <p>Validate HTML, CSS, and JS dependencies with <code>Alt+V</code>.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Code Janitor · MIT License · Built by <a href="https://github.com/Debanshu2005" target="_blank">Debanshu2005</a></p>
+  <p style="margin-top:8px;"><a href="https://github.com/Debanshu2005/code-janitor" target="_blank">GitHub</a> · <a href="https://marketplace.visualstudio.com/items?itemName=Debanshu2005.code-janitor" target="_blank">VS Code Marketplace</a></p>
+</footer>
+
+<script>
+  function copyCmd(btn, text) {
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = "Copied!";
+      setTimeout(() => btn.textContent = "Copy", 1500);
+    });
+  }
+
+  function copyConfig(btn) {
+    const text = `"codeJanitor.ai.enabled": true,
+"codeJanitor.ai.provider": "ollama",
+"codeJanitor.ai.ollamaUrl": "http://localhost:11434",
+"codeJanitor.ai.model": "qwen2.5-coder:7b",
+"codeJanitor.ai.timeout": 90000,
+"codeJanitor.autoCorrection.enabled": true,
+"codeJanitor.autoCorrection.delay": 500`;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = "Copied!";
+      setTimeout(() => btn.textContent = "Copy", 1500);
+    });
+  }
+</script>
+
+</body>
+</html>
