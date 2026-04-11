@@ -373,7 +373,7 @@
   </head>
   <body>
     <nav>
-      <div class="nav-logo">🧹 Code Janitor</div>
+      <div class="nav-logo">Code Janitor</div>
       <div class="nav-links">
         <a href="index.html">VS Code Extension</a>
         <a href="arduino-ide.html" class="active">Arduino IDE</a>
@@ -425,7 +425,7 @@
       <div class="section-label">Getting Started</div>
       <h2>Installation</h2>
       <p class="section-sub">
-        Install the VSIX plugin into Arduino IDE 2.x in 3 steps.
+        Install the VSIX plugin into Arduino IDE 2.x in 4 steps.
       </p>
 
       <div class="note">
@@ -453,25 +453,127 @@
         <div class="step">
           <div class="step-num">2</div>
           <div class="step-body">
-            <h3>Install in Arduino IDE 2.x</h3>
+            <h3>Open the .arduinoIDE folder</h3>
             <p>
-              Open Arduino IDE 2.x. Go to
-              <strong>File → Preferences → Extensions</strong>, or open the
-              Extensions panel and click the
-              <strong>⋯ menu → Install from VSIX</strong>. Select the downloaded
-              <code>.vsix</code> file and restart if prompted.
+              Navigate to the <code>.arduinoIDE</code> folder on your system:
+            </p>
+            <div
+              style="
+                margin-top: 10px;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+              "
+            >
+              <div
+                style="
+                  background: #0d1117;
+                  border: 1px solid var(--border);
+                  border-radius: 6px;
+                  padding: 8px 14px;
+                  font-size: 13px;
+                  font-family: monospace;
+                  display: flex;
+                  gap: 12px;
+                "
+              >
+                <span style="color: var(--muted); min-width: 60px"
+                  >Windows</span
+                >
+                <span style="color: var(--accent2)"
+                  >C:\Users\&lt;YourName&gt;\.arduinoIDE</span
+                >
+              </div>
+              <div
+                style="
+                  background: #0d1117;
+                  border: 1px solid var(--border);
+                  border-radius: 6px;
+                  padding: 8px 14px;
+                  font-size: 13px;
+                  font-family: monospace;
+                  display: flex;
+                  gap: 12px;
+                "
+              >
+                <span style="color: var(--muted); min-width: 60px">macOS</span>
+                <span style="color: var(--accent2)"
+                  >/Users/&lt;YourName&gt;/.arduinoIDE</span
+                >
+              </div>
+              <div
+                style="
+                  background: #0d1117;
+                  border: 1px solid var(--border);
+                  border-radius: 6px;
+                  padding: 8px 14px;
+                  font-size: 13px;
+                  font-family: monospace;
+                  display: flex;
+                  gap: 12px;
+                "
+              >
+                <span style="color: var(--muted); min-width: 60px">Linux</span>
+                <span style="color: var(--accent2)"
+                  >/home/&lt;YourName&gt;/.arduinoIDE</span
+                >
+              </div>
+            </div>
+            <p style="margin-top: 10px">
+              If the folder doesn't exist, create it manually. On Windows press
+              <code>Win+R</code> and type
+              <code>%USERPROFILE%\.arduinoIDE</code> to open it directly.
             </p>
           </div>
         </div>
         <div class="step">
           <div class="step-num">3</div>
           <div class="step-body">
-            <h3>Open the AI Chat</h3>
+            <h3>Create a plugins folder and place the VSIX inside</h3>
             <p>
+              Inside <code>.arduinoIDE</code>, create a new folder named exactly
+              <code>plugins</code>. Then move the downloaded
+              <code>.vsix</code> file into it. Your final folder structure
+              should look like this:
+            </p>
+            <div
+              style="
+                margin-top: 12px;
+                background: #0d1117;
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                padding: 16px 20px;
+                font-family: monospace;
+                font-size: 13px;
+                line-height: 2;
+              "
+            >
+              <div>
+                📁 <span style="color: var(--accent2)">.arduinoIDE</span>
+              </div>
+              <div>
+                &nbsp;&nbsp;&nbsp;&nbsp;└── 📁
+                <span style="color: var(--accent2)">plugins</span>
+              </div>
+              <div>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└──
+                📄
+                <span style="color: #86efac"
+                  >code-janitor-arduino-ai-agent-1.0.3.vsix</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h3>Restart Arduino IDE and open the chat</h3>
+            <p>
+              Fully close and reopen Arduino IDE 2.x. The plugin loads
+              automatically from the <code>plugins</code> folder on startup.
               Press <code>Ctrl+Alt+A</code> (or <code>Cmd+Alt+A</code> on Mac)
-              to open the Arduino AI Chat panel. Or open the Command Palette
-              (<code>Ctrl+Shift+P</code>) and run
-              <code>Code Janitor Arduino: Open Arduino AI Chat</code>.
+              to open the Arduino AI Chat panel.
             </p>
             <div
               style="
@@ -541,7 +643,7 @@
           </p>
         </div>
         <div class="feature">
-          <div class="feature-icon">✅</div>
+          <div class="feature-icon"></div>
           <h3>Code Review</h3>
           <p>
             Get a structured review of your sketch with suggestions for
@@ -549,7 +651,7 @@
           </p>
         </div>
         <div class="feature">
-          <div class="feature-icon">🧪</div>
+          <div class="feature-icon"></div>
           <h3>Generate Tests</h3>
           <p>
             Ask the AI to generate test cases or validation logic for your
