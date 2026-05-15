@@ -1,0 +1,9 @@
+--- 2026-05-15T04:25:20.629Z ---
+User request: the index.html one
+
+%%AUDIT_HALTED%%
+Flagged pattern: hardcoded credentials
+Location: index.html
+Reason: The script tag includes a hardcoded CDN URL for Vercel Insights, which may contain sensitive information or tracking scripts.
+%%END%%
+
