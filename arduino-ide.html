@@ -3,943 +3,773 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Code Janitor — Arduino AI Agent</title>
+    <title>Code Janitor Arduino AI Agent</title>
     <style>
+      @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap");
+
       *,
       *::before,
       *::after {
-        margin: 0;
-        padding: 0;
         box-sizing: border-box;
       }
 
       :root {
-        --bg: #0f1117;
-        --surface: #161b27;
-        --border: #1e2a3a;
-        --accent: #3b82f6;
-        --accent2: #7dd3fc;
-        --text: #e2e8f0;
-        --muted: #64748b;
-        --green: #22c55e;
+        --bg: #f4f8f4;
+        --panel: #10211d;
+        --paper: rgba(255, 255, 255, 0.86);
+        --text: #102018;
+        --muted: #5a6a61;
+        --line: rgba(16, 32, 24, 0.1);
+        --mint: #0f766e;
+        --mint-dark: #0b554f;
+        --sand: #ecf6f3;
+        --white: #ffffff;
+        --shadow: 0 18px 56px rgba(16, 32, 24, 0.1);
+        --sans: "Space Grotesk", sans-serif;
+        --mono: "IBM Plex Mono", monospace;
       }
 
       body {
-        font-family:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        background: var(--bg);
+        margin: 0;
+        font-family: var(--sans);
         color: var(--text);
-        line-height: 1.6;
+        background:
+          radial-gradient(circle at top left, rgba(15, 118, 110, 0.13), transparent 30%),
+          radial-gradient(circle at 88% 10%, rgba(67, 160, 71, 0.12), transparent 22%),
+          linear-gradient(180deg, #f7fbf8 0%, #eef5ef 100%);
       }
 
       a {
-        color: var(--accent);
+        color: inherit;
         text-decoration: none;
       }
-      a:hover {
-        text-decoration: underline;
+
+      code,
+      pre,
+      button {
+        font-family: var(--mono);
       }
 
-      /* Nav */
+      .shell {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
       nav {
         position: sticky;
         top: 0;
-        z-index: 100;
-        background: rgba(15, 17, 23, 0.92);
-        backdrop-filter: blur(10px);
-        border-bottom: 1px solid var(--border);
-        padding: 14px 32px;
+        z-index: 30;
+        backdrop-filter: blur(12px);
+        background: rgba(244, 248, 244, 0.84);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .nav-inner {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 18px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .brand {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-      }
-      .nav-logo {
-        font-size: 18px;
+        gap: 12px;
         font-weight: 700;
-        color: var(--accent2);
       }
+
+      .brand-mark {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--mint), #27a094);
+        color: var(--white);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 14px 26px rgba(15, 118, 110, 0.24);
+      }
+
       .nav-links {
         display: flex;
-        gap: 24px;
-        font-size: 14px;
-      }
-      .nav-links a {
-        color: var(--muted);
-      }
-      .nav-links a:hover {
-        color: var(--text);
-        text-decoration: none;
-      }
-      .nav-links a.active {
-        color: var(--accent2);
-      }
-
-      /* Hero */
-      .hero {
-        text-align: center;
-        padding: 80px 24px 60px;
-        max-width: 760px;
-        margin: 0 auto;
-      }
-      .badge {
-        display: inline-block;
-        background: #1e2a3a;
-        border: 1px solid var(--border);
-        border-radius: 20px;
-        padding: 4px 14px;
-        font-size: 12px;
-        color: var(--accent2);
-        margin-bottom: 20px;
-      }
-      .hero h1 {
-        font-size: clamp(2rem, 5vw, 3.2rem);
-        font-weight: 800;
-        line-height: 1.15;
-        margin-bottom: 16px;
-        background: linear-gradient(135deg, #e2e8f0 0%, #7dd3fc 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-      .hero p {
-        font-size: 17px;
-        color: var(--muted);
-        max-width: 560px;
-        margin: 0 auto 32px;
-      }
-      .hero-btns {
-        display: flex;
-        gap: 12px;
-        justify-content: center;
+        gap: 18px;
         flex-wrap: wrap;
-      }
-      .btn {
-        padding: 11px 24px;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        border: none;
-        transition: all 0.15s;
-      }
-      .btn-primary {
-        background: var(--accent);
-        color: #fff;
-      }
-      .btn-primary:hover {
-        background: #2563eb;
-        text-decoration: none;
-      }
-      .btn-outline {
-        background: transparent;
-        color: #fff;
-        border: 1px solid #4a5568;
-      }
-      .btn-outline:hover {
-        background: var(--surface);
-        text-decoration: none;
-        color: #fff;
-      }
-
-      /* Section */
-      section {
-        max-width: 860px;
-        margin: 0 auto;
-        padding: 60px 24px;
-      }
-      section + section {
-        border-top: 1px solid var(--border);
-      }
-      .section-label {
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-        color: var(--accent);
-        margin-bottom: 10px;
-      }
-      h2 {
-        font-size: 1.8rem;
-        font-weight: 700;
-        margin-bottom: 10px;
-      }
-      .section-sub {
         color: var(--muted);
-        margin-bottom: 32px;
-        font-size: 15px;
       }
 
-      /* Steps */
-      .steps {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
+      .nav-links a:hover,
+      .footer-links a:hover {
+        color: var(--mint-dark);
       }
-      .step {
-        display: flex;
-        gap: 16px;
-        align-items: flex-start;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 20px;
+
+      .hero {
+        padding: 54px 0 28px;
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+        gap: 28px;
+        align-items: center;
       }
-      .step-num {
-        width: 32px;
-        height: 32px;
-        flex-shrink: 0;
-        background: var(--accent);
-        border-radius: 50%;
+
+      .eyebrow {
+        display: inline-flex;
+        padding: 10px 15px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.78);
+        border: 1px solid var(--line);
+        color: var(--mint-dark);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-size: 0.8rem;
+      }
+
+      .hero h1 {
+        margin: 18px 0 14px;
+        font-size: clamp(2.8rem, 8vw, 5.2rem);
+        line-height: 0.96;
+        letter-spacing: -0.05em;
+      }
+
+      .hero p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.75;
+        font-size: 1.06rem;
+        max-width: 60ch;
+      }
+
+      .hero-actions {
         display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 26px;
+      }
+
+      .btn {
+        display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-size: 13px;
-        font-weight: 700;
-        color: #fff;
-      }
-      .step-body h3 {
-        font-size: 15px;
+        border-radius: 16px;
+        padding: 14px 18px;
         font-weight: 600;
-        margin-bottom: 6px;
-      }
-      .step-body p {
-        font-size: 14px;
-        color: var(--muted);
-      }
-      .step-body code {
-        background: #0d1117;
-        border: 1px solid var(--border);
-        border-radius: 4px;
-        padding: 2px 7px;
-        font-size: 13px;
-        font-family: "Fira Code", monospace;
-        color: var(--accent2);
+        border: 1px solid transparent;
+        transition: transform 0.18s ease;
       }
 
-      /* Features */
-      .features {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-        gap: 16px;
-      }
-      .feature {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        padding: 18px;
-      }
-      .feature-icon {
-        font-size: 22px;
-        margin-bottom: 10px;
-      }
-      .feature h3 {
-        font-size: 14px;
-        font-weight: 600;
-        margin-bottom: 6px;
-      }
-      .feature p {
-        font-size: 13px;
-        color: var(--muted);
+      .btn:hover {
+        transform: translateY(-1px);
       }
 
-      /* Quick actions grid */
-      .actions-grid {
+      .btn-primary {
+        background: linear-gradient(135deg, var(--mint), #27a094);
+        color: var(--white);
+      }
+
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.84);
+        border-color: var(--line);
+      }
+
+      .hero-panel,
+      .card,
+      .provider-card,
+      .footer-card {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        box-shadow: var(--shadow);
+      }
+
+      .hero-panel {
+        border-radius: 28px;
+        overflow: hidden;
+      }
+
+      .hero-panel-top {
+        background: var(--panel);
+        color: #effaf6;
+        padding: 18px 20px 0;
+      }
+
+      .dots {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+
+      .dots span {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.24);
+      }
+
+      .panel-list {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 10px;
+        padding-bottom: 18px;
+      }
+
+      .panel-item {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 14px;
+        align-items: center;
+        padding: 14px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.06);
+      }
+
+      .panel-item strong {
+        display: block;
+      }
+
+      .panel-item span,
+      .panel-item code {
+        color: rgba(239, 250, 246, 0.72);
+        font-size: 0.84rem;
+      }
+
+      .panel-item code {
+        padding: 5px 8px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .hero-panel-bottom {
+        padding: 18px 20px 20px;
+        display: grid;
         gap: 12px;
       }
-      .action-chip {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 14px 16px;
+
+      .chip-row {
         display: flex;
-        align-items: center;
+        flex-wrap: wrap;
         gap: 10px;
-        font-size: 13px;
-        font-weight: 500;
-      }
-      .action-chip span:first-child {
-        font-size: 18px;
       }
 
-      /* Providers */
-      .providers {
+      .chip {
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: var(--sand);
+        color: var(--mint-dark);
+        border: 1px solid rgba(15, 118, 110, 0.14);
+        font-size: 0.82rem;
+      }
+
+      section {
+        padding: 34px 0;
+      }
+
+      .section-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        gap: 18px;
+        margin-bottom: 18px;
+      }
+
+      .section-kicker {
+        margin-bottom: 8px;
+        color: var(--mint-dark);
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        font-size: 0.8rem;
+      }
+
+      .section-head h2 {
+        margin: 0;
+        font-size: clamp(2rem, 4vw, 2.9rem);
+        letter-spacing: -0.04em;
+      }
+
+      .section-head p {
+        margin: 0;
+        max-width: 58ch;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .grid-3,
+      .grid-2,
+      .provider-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-        gap: 20px;
-      }
-      .provider-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 24px;
-      }
-      .provider-header {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 14px;
-      }
-      .provider-icon {
-        font-size: 22px;
-      }
-      .provider-header h3 {
-        font-size: 16px;
-        font-weight: 700;
-      }
-      .provider-header .free-badge {
-        margin-left: auto;
-        font-size: 11px;
-        font-weight: 600;
-        background: #14532d;
-        color: #86efac;
-        padding: 2px 8px;
-        border-radius: 10px;
-      }
-      .provider-steps {
-        list-style: none;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-      }
-      .provider-steps li {
-        display: flex;
-        gap: 10px;
-        align-items: flex-start;
-        font-size: 14px;
-        color: var(--muted);
-      }
-      .provider-steps li span:first-child {
-        color: var(--accent);
-        font-weight: 700;
-        flex-shrink: 0;
-      }
-      .provider-link {
-        display: inline-block;
-        margin-top: 16px;
-        padding: 8px 16px;
-        background: var(--accent);
-        color: #fff;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: 600;
-      }
-      .provider-link:hover {
-        background: #2563eb;
-        text-decoration: none;
+        gap: 16px;
       }
 
-      /* Note box */
-      .note {
-        background: #1e2a3a;
-        border: 1px solid #2d3f55;
-        border-radius: 10px;
-        padding: 16px 20px;
-        font-size: 14px;
-        color: var(--muted);
-        margin-bottom: 28px;
-      }
-      .note strong {
-        color: var(--accent2);
+      .grid-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
 
-      /* Footer */
+      .grid-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .provider-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+      }
+
+      .card,
+      .provider-card,
+      .footer-card {
+        border-radius: 24px;
+        padding: 22px;
+      }
+
+      .card h3,
+      .provider-card h3 {
+        margin: 0 0 10px;
+        font-size: 1.18rem;
+      }
+
+      .card p,
+      .provider-card p,
+      .footer-card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .card ul,
+      .provider-card ul {
+        margin: 14px 0 0;
+        padding-left: 18px;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .command-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .command-row {
+        padding: 14px 16px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.78);
+        border: 1px solid var(--line);
+      }
+
+      .command-row strong {
+        display: block;
+        margin-bottom: 6px;
+      }
+
+      .command-row code,
+      .install-block code {
+        display: inline-flex;
+        margin-top: 8px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: var(--sand);
+        color: var(--mint-dark);
+      }
+
+      .install-block pre {
+        margin: 14px 0 0;
+        padding: 16px;
+        border-radius: 18px;
+        overflow: auto;
+        background: #122722;
+        color: #eefaf6;
+        font-size: 0.86rem;
+        line-height: 1.6;
+      }
+
+      .provider-badge {
+        display: inline-flex;
+        margin-bottom: 12px;
+        padding: 7px 10px;
+        border-radius: 999px;
+        background: var(--sand);
+        color: var(--mint-dark);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-size: 0.78rem;
+      }
+
       footer {
-        border-top: 1px solid var(--border);
-        padding: 32px 24px;
-        text-align: center;
-        font-size: 13px;
-        color: var(--muted);
-      }
-      footer a {
-        color: var(--muted);
-      }
-      footer a:hover {
-        color: var(--text);
+        padding: 24px 0 42px;
       }
 
-      @media (max-width: 600px) {
-        nav {
-          padding: 12px 16px;
+      .footer-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 18px;
+      }
+
+      .footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        color: var(--muted);
+      }
+
+      @media (max-width: 1080px) {
+        .grid-3,
+        .provider-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
         }
+      }
+
+      @media (max-width: 960px) {
+        .hero,
+        .grid-2 {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .shell,
+        .nav-inner {
+          width: min(100% - 24px, 1180px);
+        }
+
         .nav-links {
           display: none;
         }
-        .hero {
-          padding: 50px 16px 40px;
+
+        .grid-3,
+        .provider-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .section-head,
+        .footer-card {
+          display: grid;
         }
       }
     </style>
   </head>
   <body>
     <nav>
-      <div class="nav-logo">🧹 Code Janitor</div>
-      <div class="nav-links">
-        <a href="index.html">VS Code Extension</a>
-        <a href="arduino-ide.html" class="active">Arduino IDE</a>
-        <a href="https://github.com/Debanshu2005/code-janitor" target="_blank"
-          >GitHub</a
-        >
+      <div class="nav-inner">
+        <a class="brand" href="index.html">
+          <span class="brand-mark">CJ</span>
+          <span>Code Janitor Arduino</span>
+        </a>
+        <div class="nav-links">
+          <a href="index.html">Main site</a>
+          <a href="#features">Features</a>
+          <a href="#commands">Commands</a>
+          <a href="#install">Install</a>
+          <a href="#providers">Providers</a>
+        </div>
       </div>
     </nav>
 
-    <!-- Hero -->
-    <div class="hero">
-      <div class="badge">
-        Arduino IDE 2.x · VSIX Plugin · Free & Open Source
-      </div>
-      <h1>Code Janitor<br />Arduino AI Agent</h1>
-      <p>
-        An AI coding assistant built for Arduino IDE 2.x. Ask questions, get
-        fixes, refactor sketches, and generate code — all inside your Arduino
-        IDE.
-      </p>
-      <div class="hero-btns">
-        <a
-          class="btn btn-primary"
-          href="https://github.com/Debanshu2005/code-janitor/releases"
-          target="_blank"
-        >
-          Download VSIX
-        </a>
-        <a
-          class="btn btn-outline"
-          href="vscode://Debanshu2005.code-janitor-arduino-ai-agent/open-chat"
-          style="color: #fff"
-        >
-          Open Arduino Chat
-        </a>
-        <a
-          class="btn btn-outline"
-          href="https://github.com/Debanshu2005/code-janitor"
-          target="_blank"
-          style="color: #fff"
-        >
-          View on GitHub
-        </a>
-      </div>
-    </div>
-
-    <!-- Install -->
-    <section id="install">
-      <div class="section-label">Getting Started</div>
-      <h2>Installation</h2>
-      <p class="section-sub">
-        Install the VSIX plugin into Arduino IDE 2.x in 4 steps.
-      </p>
-
-      <div class="note">
-        <strong>Note:</strong> This is a standalone VSIX plugin for Arduino IDE
-        2.x. It does not require the main Code Janitor VS Code extension.
-      </div>
-
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">1</div>
-          <div class="step-body">
-            <h3>Download the VSIX</h3>
-            <p>
-              Go to the
-              <a
-                href="https://github.com/Debanshu2005/code-janitor/releases"
-                target="_blank"
-                >GitHub Releases</a
-              >
-              page and download the latest
-              <code>code-janitor-arduino-ai-agent-x.x.x.vsix</code> file.
-            </p>
+    <main class="shell">
+      <section class="hero">
+        <div>
+          <div class="eyebrow">Standalone VSIX package for Arduino IDE 2.x</div>
+          <h1>Arduino chat, source control, and graph context.</h1>
+          <p>
+            The Arduino package inside the Code Janitor repo is a focused product:
+            AI chat, guided edits, Graphify project views, source control, and
+            Arduino-specific helpers like Mermaid-based circuit previews. It is
+            narrower than the main VS Code extension and the website now reflects
+            that split clearly.
+          </p>
+          <div class="hero-actions">
+            <a
+              class="btn btn-primary"
+              href="https://github.com/Debanshu2005/code-janitor/releases"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Download latest VSIX
+            </a>
+            <a
+              class="btn btn-secondary"
+              href="https://github.com/Debanshu2005/code-janitor/tree/main/arduino-ide-agent"
+              target="_blank"
+              rel="noreferrer"
+            >
+              View Arduino source
+            </a>
+            <a class="btn btn-secondary" href="index.html">Back to main site</a>
           </div>
         </div>
-        <div class="step">
-          <div class="step-num">2</div>
-          <div class="step-body">
-            <h3>Open the .arduinoIDE folder</h3>
-            <p>
-              Navigate to the <code>.arduinoIDE</code> folder on your system:
-            </p>
-            <div
-              style="
-                margin-top: 10px;
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-              "
-            >
-              <div
-                style="
-                  background: #0d1117;
-                  border: 1px solid var(--border);
-                  border-radius: 6px;
-                  padding: 8px 14px;
-                  font-size: 13px;
-                  font-family: monospace;
-                  display: flex;
-                  gap: 12px;
-                "
-              >
-                <span style="color: var(--muted); min-width: 60px"
-                  >Windows</span
-                >
-                <span style="color: var(--accent2)"
-                  >C:\Users\&lt;YourName&gt;\.arduinoIDE</span
-                >
-              </div>
-              <div
-                style="
-                  background: #0d1117;
-                  border: 1px solid var(--border);
-                  border-radius: 6px;
-                  padding: 8px 14px;
-                  font-size: 13px;
-                  font-family: monospace;
-                  display: flex;
-                  gap: 12px;
-                "
-              >
-                <span style="color: var(--muted); min-width: 60px">macOS</span>
-                <span style="color: var(--accent2)"
-                  >/Users/&lt;YourName&gt;/.arduinoIDE</span
-                >
-              </div>
-              <div
-                style="
-                  background: #0d1117;
-                  border: 1px solid var(--border);
-                  border-radius: 6px;
-                  padding: 8px 14px;
-                  font-size: 13px;
-                  font-family: monospace;
-                  display: flex;
-                  gap: 12px;
-                "
-              >
-                <span style="color: var(--muted); min-width: 60px">Linux</span>
-                <span style="color: var(--accent2)"
-                  >/home/&lt;YourName&gt;/.arduinoIDE</span
-                >
-              </div>
+
+        <div class="hero-panel">
+          <div class="hero-panel-top">
+            <div class="dots">
+              <span></span>
+              <span></span>
+              <span></span>
             </div>
-            <p style="margin-top: 10px">
-              If the folder doesn't exist, create it manually. On Windows press
-              <code>Win+R</code> and type
-              <code>%USERPROFILE%\.arduinoIDE</code> to open it directly.
-            </p>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">3</div>
-          <div class="step-body">
-            <h3>Create a plugins folder and place the VSIX inside</h3>
-            <p>
-              Inside <code>.arduinoIDE</code>, create a new folder named exactly
-              <code>plugins</code>. Then move the downloaded
-              <code>.vsix</code> file into it. Your final folder structure
-              should look like this:
-            </p>
-            <div
-              style="
-                margin-top: 12px;
-                background: #0d1117;
-                border: 1px solid var(--border);
-                border-radius: 8px;
-                padding: 16px 20px;
-                font-family: monospace;
-                font-size: 13px;
-                line-height: 2;
-              "
-            >
-              <div>
-                📁 <span style="color: var(--accent2)">.arduinoIDE</span>
+            <div class="panel-list">
+              <div class="panel-item">
+                <div>
+                  <strong>Open Arduino AI Chat</strong>
+                  <span>Chat, review, fix, refactor, and explain sketches</span>
+                </div>
+                <code>Ctrl+Alt+A</code>
               </div>
-              <div>
-                &nbsp;&nbsp;&nbsp;&nbsp;└── 📁
-                <span style="color: var(--accent2)">plugins</span>
+              <div class="panel-item">
+                <div>
+                  <strong>Open Source Control</strong>
+                  <span>Commit, branch, pull, push, and inspect changes</span>
+                </div>
+                <code>Ctrl+Alt+G</code>
               </div>
-              <div>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└──
-                📄
-                <span style="color: #86efac"
-                  >code-janitor-arduino-ai-agent-1.2.0.vsix</span
-                >
+              <div class="panel-item">
+                <div>
+                  <strong>Visualize Project Graph</strong>
+                  <span>Graphify-backed project structure and circuit context</span>
+                </div>
+                <code>Ctrl+Alt+V</code>
               </div>
             </div>
           </div>
-        </div>
-        <div class="step">
-          <div class="step-num">4</div>
-          <div class="step-body">
-            <h3>Restart Arduino IDE and open the chat</h3>
-            <p>
-              Fully close and reopen Arduino IDE 2.x. The plugin loads
-              automatically from the <code>plugins</code> folder on startup.
-              Press <code>Ctrl+Alt+A</code> (or <code>Cmd+Alt+A</code> on Mac)
-              to open the Arduino AI Chat panel.
-            </p>
-            <div
-              style="
-                margin-top: 12px;
-                display: flex;
-                gap: 10px;
-                flex-wrap: wrap;
-              "
-            >
-              <a
-                class="btn btn-primary"
-                href="https://github.com/Debanshu2005/code-janitor/releases"
-                target="_blank"
-                style="font-size: 13px; padding: 8px 16px"
-              >
-                Download VSIX</a
-              >
-              <a
-                class="btn btn-outline"
-                href="vscode://Debanshu2005.code-janitor-arduino-ai-agent/open-chat"
-                style="font-size: 13px; padding: 8px 16px; color: #fff"
-              >
-                Open Arduino Chat</a
-              >
+          <div class="hero-panel-bottom">
+            <div class="chip-row">
+              <span class="chip">Session management with auto-titling</span>
+              <span class="chip">Mermaid previews and YouTube search</span>
+              <span class="chip">Workspace scan before answering</span>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Features -->
-    <section id="features">
-      <div class="section-label">What's Included</div>
-      <h2>Features</h2>
-      <p class="section-sub">
-        Everything the Arduino AI Agent can do out of the box.
-      </p>
-      <div class="features">
-        <div class="feature">
-          <div class="feature-icon">🤖</div>
-          <h3>Arduino AI Chat</h3>
-          <p>
-            Ask anything about your sketch — get explanations, fixes, and code
-            generated instantly.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">🔧</div>
-          <h3>Fix & Refactor</h3>
-          <p>
-            Ask the AI to fix bugs or refactor your sketch. Changes are applied
-            directly to your files.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">📋</div>
-          <h3>Explain Code</h3>
-          <p>
-            Highlight any code and ask the AI to explain what it does in plain
-            English.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">🔍</div>
-          <h3>Syntax Scan</h3>
-          <p>
-            Scan your open sketch for syntax errors and get a summary of issues
-            found.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">🔍</div>
-          <h3>Code Review</h3>
-          <p>
-            Get a structured review of your sketch with suggestions for
-            improvement.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">🧪</div>
-          <h3>Generate Tests</h3>
-          <p>
-            Ask the AI to generate test cases or validation logic for your
-            Arduino code.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">🌐</div>
-          <h3>Multi-Provider</h3>
-          <p>
-            Works with Ollama (local), Groq, OpenRouter, and Anthropic — your
-            choice.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">📁</div>
-          <h3>Workspace Aware</h3>
-          <p>
-            Scans your workspace for context before answering so responses are
-            relevant to your project.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">🌿</div>
-          <h3>Source Control</h3>
-          <p>
-            Full Git integration: clone, pull, push, commit, stage, and branch
-            management from the chat panel.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">📝</div>
-          <h3>Add Docs</h3>
-          <p>
-            Ask the AI to add JSDoc or docstring comments to your active sketch
-            file automatically.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Quick Actions -->
-    <section id="actions">
-      <div class="section-label">Quick Actions</div>
-      <h2>Chat Action Chips</h2>
-      <p class="section-sub">
-        The chat panel includes one-click action chips to speed up common tasks.
-      </p>
-      <div class="actions-grid">
-        <div class="action-chip">
-          <span>🌿</span><span>Source Control</span>
-        </div>
-        <div class="action-chip"><span>⚡</span><span>Check syntax</span></div>
-        <div class="action-chip"><span>🔍</span><span>Scan codebase</span></div>
-        <div class="action-chip"><span>💡</span><span>Explain file</span></div>
-        <div class="action-chip"><span>🔧</span><span>Fix issues</span></div>
-        <div class="action-chip"><span>♻️</span><span>Refactor</span></div>
-        <div class="action-chip">
-          <span>🧪</span><span>Generate tests</span>
-        </div>
-        <div class="action-chip"><span>📝</span><span>Add docs</span></div>
-      </div>
-    </section>
-
-    <!-- AI Providers -->
-    <section id="providers">
-      <div class="section-label">AI Providers</div>
-      <h2>Choose Your AI Provider</h2>
-      <p class="section-sub">
-        The Arduino AI Agent supports the same providers as the main extension.
-        Use Ollama for fully offline AI, or Groq/OpenRouter for free cloud
-        models.
-      </p>
-      <div class="providers">
-        <div class="provider-card">
-          <div class="provider-header">
-            <div class="provider-icon">🖥</div>
-            <h3>Ollama (Local)</h3>
-            <span class="free-badge">No Key Needed</span>
+      <section id="features">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Feature Map</div>
+            <h2>What the Arduino package includes</h2>
           </div>
-          <ul class="provider-steps">
-            <li>
-              <span>1.</span
-              ><span
-                >Download and install
-                <a href="https://ollama.com" target="_blank">Ollama</a> for your
-                OS.</span
-              >
-            </li>
-            <li>
-              <span>2.</span
-              ><span
-                >Run <code>ollama pull qwen2.5-coder:7b</code> in a
-                terminal.</span
-              >
-            </li>
-            <li>
-              <span>3.</span
-              ><span
-                >In the chat panel, select <strong>Ollama (local)</strong> — no
-                API key required.</span
-              >
-            </li>
-          </ul>
-          <a
-            class="provider-link"
-            href="https://ollama.com/download"
-            target="_blank"
-            >Download Ollama →</a
-          >
+          <p>
+            These sections are based on the current Arduino README, manifest, and
+            source layout in the repo. The page now emphasizes the features that
+            are actually present in the standalone package.
+          </p>
         </div>
 
-        <div class="provider-card">
-          <div class="provider-header">
-            <div class="provider-icon">⚡</div>
+        <div class="grid-3">
+          <article class="card">
+            <h3>Dedicated Arduino chat</h3>
+            <p>
+              Open a chat panel that understands workspace files, review sketches,
+              explain code, refactor sections, suggest fixes, and preserve the
+              last selected model for each provider.
+            </p>
+            <ul>
+              <li>Quick actions for explain, review, fix, refactor, tests, and syntax scan</li>
+              <li>Structured FILE, MKDIR, and CMD actions with safety checks</li>
+              <li>Multiple chat sessions with compaction and auto titles</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <h3>Graphify and Mermaid views</h3>
+            <p>
+              The Arduino package can load Graphify reports for architecture-aware
+              answers and render Mermaid output for diagrams and circuit-oriented
+              previews when a sketch can be mapped visually.
+            </p>
+            <ul>
+              <li>Project graph visualization command in the manifest</li>
+              <li>Mermaid rendering in the chat UI</li>
+              <li>Graph-based context from <code>graphify-out/GRAPH_REPORT.md</code></li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <h3>Git and search tools</h3>
+            <p>
+              Source control is a core part of the Arduino package, not an extra.
+              The repo also includes direct web and YouTube search support inside
+              chat for sketch research and tutorial discovery.
+            </p>
+            <ul>
+              <li>Clone, pull, push, stage, commit, and branch management</li>
+              <li>YouTube search and inline preview helpers</li>
+              <li>Workspace scanning before responses</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section id="commands">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Commands</div>
+            <h2>Current Arduino manifest commands</h2>
+          </div>
+          <p>
+            The command list below follows the current
+            <code>arduino-ide-agent/package.json</code> manifest, including the
+            project graph command that was missing from the old website copy.
+          </p>
+        </div>
+
+        <div class="grid-2">
+          <article class="card">
+            <h3>Command palette entries</h3>
+            <div class="command-list">
+              <div class="command-row">
+                <strong>Open Welcome Screen</strong>
+                <span>Entry point to the standalone Arduino package.</span>
+                <code>Code Janitor Arduino: Open Welcome Screen</code>
+              </div>
+              <div class="command-row">
+                <strong>Open Arduino AI Chat</strong>
+                <span>Launch the main sketch assistant panel.</span>
+                <code>Code Janitor Arduino: Open Arduino AI Chat</code>
+              </div>
+              <div class="command-row">
+                <strong>Open Source Control</strong>
+                <span>Open the Git workflow panel inside the package.</span>
+                <code>Code Janitor Arduino: Open Source Control</code>
+              </div>
+              <div class="command-row">
+                <strong>Visualize Project Graph</strong>
+                <span>Open Graphify visualization for the current project.</span>
+                <code>Code Janitor Arduino: Visualize Project Graph</code>
+              </div>
+            </div>
+          </article>
+
+          <article class="card">
+            <h3>Default shortcuts</h3>
+            <div class="command-list">
+              <div class="command-row">
+                <strong>Welcome and chat</strong>
+                <span>Windows/Linux <code>Ctrl+Alt+A</code> or Mac <code>Cmd+Alt+A</code>.</span>
+              </div>
+              <div class="command-row">
+                <strong>Source control</strong>
+                <span>Windows/Linux <code>Ctrl+Alt+G</code> or Mac <code>Cmd+Alt+G</code>.</span>
+              </div>
+              <div class="command-row">
+                <strong>Project graph</strong>
+                <span>Windows/Linux <code>Ctrl+Alt+V</code> or Mac <code>Cmd+Alt+V</code>.</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="install">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Install</div>
+            <h2>Install flow aligned to the repo</h2>
+          </div>
+          <p>
+            The old site described a custom folder-drop workflow. The repo
+            README, however, presents this package as a standalone VSIX for
+            Arduino IDE 2.x and compatible Theia or VS Code extension hosts, so
+            this page now reflects that packaging story instead.
+          </p>
+        </div>
+
+        <div class="grid-2">
+          <article class="card install-block">
+            <h3>Recommended path</h3>
+            <p>
+              Download the current Arduino VSIX from the releases page, then
+              install it into Arduino IDE 2.x or another compatible extension
+              host.
+            </p>
+            <pre><code>1. Download the latest Arduino VSIX from GitHub Releases
+2. Open Arduino IDE 2.x
+3. Install the package using your extension host's VSIX flow
+4. Open the AI chat or source control panel from the command palette</code></pre>
+          </article>
+          <article class="card install-block">
+            <h3>Manual command example</h3>
+            <p>
+              The repo README also shows a direct CLI-style installation example
+              for compatible hosts:
+            </p>
+            <pre><code>code --install-extension code-janitor-arduino-x.x.x.vsix</code></pre>
+            <p style="margin-top: 14px">
+              If you are using Arduino IDE specifically, match the exact
+              installation flow supported by your current version and host.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section id="providers">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Providers</div>
+            <h2>Provider setup in the Arduino manifest</h2>
+          </div>
+          <p>
+            The current Arduino manifest exposes the same provider family as the
+            main project: Ollama, Groq, OpenRouter, Anthropic, and NVIDIA.
+          </p>
+        </div>
+
+        <div class="provider-grid">
+          <article class="provider-card">
+            <span class="provider-badge">Default</span>
+            <h3>Ollama</h3>
+            <p>
+              Local by default at <code>http://localhost:11434</code>. The
+              manifest defaults the Arduino model field to
+              <code>qwen2.5-coder:1.5b</code>.
+            </p>
+          </article>
+          <article class="provider-card">
+            <span class="provider-badge">Hosted</span>
             <h3>Groq</h3>
-            <span class="free-badge">Free Tier</span>
-          </div>
-          <ul class="provider-steps">
-            <li>
-              <span>1.</span
-              ><span
-                >Sign up at
-                <a href="https://console.groq.com" target="_blank"
-                  >console.groq.com</a
-                >.</span
-              >
-            </li>
-            <li>
-              <span>2.</span
-              ><span>Create an API key under <strong>API Keys</strong>.</span>
-            </li>
-            <li>
-              <span>3.</span
-              ><span
-                >Paste the key in the chat panel under the Groq provider.</span
-              >
-            </li>
-          </ul>
-          <a
-            class="provider-link"
-            href="https://console.groq.com/keys"
-            target="_blank"
-            >Get Groq API Key →</a
-          >
-        </div>
-
-        <div class="provider-card">
-          <div class="provider-header">
-            <div class="provider-icon">🌐</div>
+            <p>
+              Fast hosted option for quick sketch review and chat responses.
+            </p>
+          </article>
+          <article class="provider-card">
+            <span class="provider-badge">Catalog</span>
             <h3>OpenRouter</h3>
-            <span class="free-badge">Free Models</span>
-          </div>
-          <ul class="provider-steps">
-            <li>
-              <span>1.</span
-              ><span
-                >Sign up at
-                <a href="https://openrouter.ai" target="_blank">openrouter.ai</a
-                >.</span
-              >
-            </li>
-            <li>
-              <span>2.</span
-              ><span
-                >Create a key under <strong>Keys</strong> — no credit card for
-                free models.</span
-              >
-            </li>
-            <li>
-              <span>3.</span
-              ><span
-                >Pick a model ending in <code>:free</code> in the chat
-                panel.</span
-              >
-            </li>
-          </ul>
-          <a
-            class="provider-link"
-            href="https://openrouter.ai/keys"
-            target="_blank"
-            >Get OpenRouter Key →</a
-          >
+            <p>
+              Useful when you want access to a wider model roster without
+              changing the package surface.
+            </p>
+          </article>
+          <article class="provider-card">
+            <span class="provider-badge">Claude</span>
+            <h3>Anthropic</h3>
+            <p>
+              Available via API key in the Arduino settings for deeper reasoning
+              workflows.
+            </p>
+          </article>
+          <article class="provider-card">
+            <span class="provider-badge">NIM</span>
+            <h3>NVIDIA</h3>
+            <p>
+              Supported directly in the manifest with a dedicated NVIDIA model
+              field and runtime-friendly defaults.
+            </p>
+          </article>
         </div>
+      </section>
+    </main>
 
-        <div class="provider-card">
-          <div class="provider-header">
-            <div class="provider-icon">🤖</div>
-            <h3>Anthropic (Claude)</h3>
-            <span class="free-badge">Paid</span>
-          </div>
-          <ul class="provider-steps">
-            <li>
-              <span>1.</span
-              ><span
-                >Sign up at
-                <a href="https://console.anthropic.com" target="_blank"
-                  >console.anthropic.com</a
-                >.</span
-              >
-            </li>
-            <li>
-              <span>2.</span
-              ><span>Create an API key under <strong>API Keys</strong>.</span>
-            </li>
-            <li>
-              <span>3.</span
-              ><span
-                >Paste the key in the chat panel under the Anthropic
-                provider.</span
-              >
-            </li>
-          </ul>
-          <a
-            class="provider-link"
-            href="https://console.anthropic.com/settings/keys"
-            target="_blank"
-            >Get Anthropic Key →</a
-          >
+    <footer class="shell">
+      <div class="footer-card">
+        <p>
+          Code Janitor Arduino AI Agent is part of the main
+          <a href="https://github.com/Debanshu2005/code-janitor" target="_blank" rel="noreferrer">
+            Code Janitor
+          </a>
+          repository and is published under the MIT license.
+        </p>
+        <div class="footer-links">
+          <a href="index.html">Main site</a>
+          <a href="https://github.com/Debanshu2005/code-janitor/releases" target="_blank" rel="noreferrer">
+            Releases
+          </a>
+          <a href="https://github.com/Debanshu2005/code-janitor/tree/main/arduino-ide-agent" target="_blank" rel="noreferrer">
+            Arduino source
+          </a>
         </div>
       </div>
-    </section>
-
-    <!-- Commands -->
-    <section id="commands">
-      <div class="section-label">Commands & Shortcuts</div>
-      <h2>Keyboard Shortcuts</h2>
-      <p class="section-sub">
-        All available commands and their default keybindings.
-      </p>
-      <div class="steps">
-        <div class="step">
-          <div
-            class="step-num"
-            style="background: #1e3a5f; color: var(--accent2); font-size: 18px"
-          >
-            ⌨
-          </div>
-          <div class="step-body">
-            <h3>Open Arduino AI Chat</h3>
-            <p>
-              <code>Ctrl+Alt+A</code> on Windows/Linux &nbsp;·&nbsp;
-              <code>Cmd+Alt+A</code> on Mac <br />Or via Command Palette:
-              <code>Code Janitor Arduino: Open Arduino AI Chat</code>
-            </p>
-          </div>
-        </div>
-        <div class="step">
-          <div
-            class="step-num"
-            style="background: #1e3a5f; color: var(--accent2); font-size: 18px"
-          >
-            ⌨
-          </div>
-          <div class="step-body">
-            <h3>Open Source Control</h3>
-            <p>
-              <code>Ctrl+Alt+G</code> on Windows/Linux &nbsp;·&nbsp;
-              <code>Cmd+Alt+G</code> on Mac <br />Or via Command Palette:
-              <code>Code Janitor Arduino: Open Source Control</code>
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <footer>
-      <p>
-        Code Janitor Arduino AI Agent · MIT License · Built by
-        <a href="https://github.com/Debanshu2005" target="_blank"
-          >Debanshu2005</a
-        >
-      </p>
-      <p style="margin-top: 8px">
-        <a href="index.html">VS Code Extension</a>
-        &nbsp;·&nbsp;
-        <a href="https://github.com/Debanshu2005/code-janitor" target="_blank"
-          >GitHub</a
-        >
-        &nbsp;·&nbsp;
-        <a
-          href="https://github.com/Debanshu2005/code-janitor/releases"
-          target="_blank"
-          >Releases</a
-        >
-      </p>
     </footer>
   </body>
 </html>

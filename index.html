@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Code Janitor — Setup Guide</title>
+    <title>Code Janitor | VS Code Extension, CLI, and Arduino AI Agent</title>
     <script>
       window.va =
         window.va ||
@@ -13,781 +13,1597 @@
     </script>
     <script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
     <style>
+      @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap");
+
       *,
       *::before,
       *::after {
-        margin: 0;
-        padding: 0;
         box-sizing: border-box;
       }
 
       :root {
-        --bg: #0f1117;
-        --surface: #161b27;
-        --border: #1e2a3a;
-        --accent: #3b82f6;
-        --accent2: #7dd3fc;
-        --text: #e2e8f0;
-        --muted: #64748b;
-        --green: #22c55e;
-        --yellow: #fbbf24;
-        --red: #f87171;
+        --bg: #f7efe4;
+        --paper: rgba(255, 250, 244, 0.86);
+        --panel: #16131d;
+        --panel-2: #201b28;
+        --text: #17130f;
+        --muted: #655a4a;
+        --line: rgba(23, 19, 15, 0.1);
+        --accent: #c65f16;
+        --accent-strong: #8e3d05;
+        --teal: #0f766e;
+        --teal-soft: #d7f4ef;
+        --amber-soft: #fff0db;
+        --white: #fffdf9;
+        --shadow: 0 18px 60px rgba(63, 40, 16, 0.12);
+        --mono: "IBM Plex Mono", monospace;
+        --sans: "Space Grotesk", sans-serif;
+      }
+
+      html {
+        scroll-behavior: smooth;
       }
 
       body {
-        font-family:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        background: var(--bg);
+        margin: 0;
+        font-family: var(--sans);
         color: var(--text);
-        line-height: 1.6;
+        background:
+          radial-gradient(circle at top left, rgba(198, 95, 22, 0.18), transparent 32%),
+          radial-gradient(circle at top right, rgba(15, 118, 110, 0.12), transparent 26%),
+          linear-gradient(180deg, #fbf5eb 0%, #f5ecdf 58%, #f7f1e7 100%);
       }
 
       a {
-        color: var(--accent);
+        color: inherit;
         text-decoration: none;
       }
-      a:hover {
-        text-decoration: underline;
+
+      code,
+      pre,
+      button,
+      input {
+        font-family: var(--mono);
       }
 
-      /* ── Nav ── */
+      .page-shell {
+        width: min(1200px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
       nav {
         position: sticky;
         top: 0;
-        z-index: 100;
-        background: rgba(15, 17, 23, 0.92);
-        backdrop-filter: blur(10px);
-        border-bottom: 1px solid var(--border);
-        padding: 14px 32px;
+        z-index: 40;
+        backdrop-filter: blur(14px);
+        background: rgba(247, 239, 228, 0.82);
+        border-bottom: 1px solid rgba(23, 19, 15, 0.08);
+      }
+
+      .nav-inner {
+        width: min(1200px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 18px 0;
         display: flex;
         align-items: center;
         justify-content: space-between;
-      }
-      .nav-logo {
-        font-size: 18px;
-        font-weight: 700;
-        color: var(--accent2);
-      }
-      .nav-links {
-        display: flex;
-        gap: 24px;
-        font-size: 14px;
-        color: var(--muted);
-      }
-      .nav-links a {
-        color: var(--muted);
-      }
-      .nav-links a:hover {
-        color: var(--text);
-        text-decoration: none;
-      }
-
-      /* ── Hero ── */
-      .hero {
-        text-align: center;
-        padding: 80px 24px 60px;
-        max-width: 760px;
-        margin: 0 auto;
-      }
-      .badge {
-        display: inline-block;
-        background: #1e2a3a;
-        border: 1px solid var(--border);
-        border-radius: 20px;
-        padding: 4px 14px;
-        font-size: 12px;
-        color: var(--accent2);
-        margin-bottom: 20px;
-      }
-      .hero h1 {
-        font-size: clamp(2rem, 5vw, 3.2rem);
-        font-weight: 800;
-        line-height: 1.15;
-        margin-bottom: 16px;
-        background: linear-gradient(135deg, #e2e8f0 0%, #7dd3fc 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-      .hero p {
-        font-size: 17px;
-        color: var(--muted);
-        max-width: 560px;
-        margin: 0 auto 32px;
-      }
-      .hero-btns {
-        display: flex;
-        gap: 12px;
-        justify-content: center;
-        flex-wrap: wrap;
-      }
-      .btn {
-        padding: 11px 24px;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        border: none;
-        transition: all 0.15s;
-      }
-      .btn-primary {
-        background: var(--accent);
-        color: #fff;
-      }
-      .btn-primary:hover {
-        background: #2563eb;
-        text-decoration: none;
-      }
-      .btn-outline {
-        background: transparent;
-        color: #fff;
-        border: 1px solid #4a5568;
-      }
-      .btn-outline:hover {
-        background: var(--surface);
-        text-decoration: none;
-        color: #fff;
-      }
-
-      /* ── Section ── */
-      section {
-        max-width: 860px;
-        margin: 0 auto;
-        padding: 60px 24px;
-      }
-      section + section {
-        border-top: 1px solid var(--border);
-      }
-      .section-label {
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-        color: var(--accent);
-        margin-bottom: 10px;
-      }
-      h2 {
-        font-size: 1.8rem;
-        font-weight: 700;
-        margin-bottom: 10px;
-      }
-      .section-sub {
-        color: var(--muted);
-        margin-bottom: 32px;
-        font-size: 15px;
-      }
-
-      /* ── Steps ── */
-      .steps {
-        display: flex;
-        flex-direction: column;
         gap: 20px;
       }
-      .step {
-        display: flex;
-        gap: 16px;
-        align-items: flex-start;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 20px;
-      }
-      .step-num {
-        width: 32px;
-        height: 32px;
-        flex-shrink: 0;
-        background: var(--accent);
-        border-radius: 50%;
+
+      .brand {
         display: flex;
         align-items: center;
-        justify-content: center;
-        font-size: 13px;
+        gap: 12px;
         font-weight: 700;
-        color: #fff;
-      }
-      .step-body h3 {
-        font-size: 15px;
-        font-weight: 600;
-        margin-bottom: 6px;
-      }
-      .step-body p {
-        font-size: 14px;
-        color: var(--muted);
-      }
-      .step-body code {
-        background: #0d1117;
-        border: 1px solid var(--border);
-        border-radius: 4px;
-        padding: 2px 7px;
-        font-size: 13px;
-        font-family: "Fira Code", monospace;
-        color: var(--accent2);
+        letter-spacing: 0.02em;
       }
 
-      /* ── Models grid ── */
-      .models-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-        gap: 16px;
-      }
-      .model-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
+      .brand-mark {
+        width: 40px;
+        height: 40px;
         border-radius: 12px;
-        padding: 20px;
-        transition: border-color 0.15s;
+        background: linear-gradient(135deg, var(--accent), #f09b45);
+        color: var(--white);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 12px 22px rgba(198, 95, 22, 0.3);
       }
-      .model-card:hover {
-        border-color: var(--accent);
-      }
-      .model-tag {
-        display: inline-block;
-        font-size: 11px;
-        font-weight: 600;
-        padding: 2px 8px;
-        border-radius: 10px;
-        margin-bottom: 10px;
-      }
-      .tag-free {
-        background: #14532d;
-        color: #86efac;
-      }
-      .tag-local {
-        background: #1e3a5f;
-        color: #7dd3fc;
-      }
-      .tag-paid {
-        background: #451a03;
-        color: #fcd34d;
-      }
-      .model-card h3 {
-        font-size: 14px;
-        font-weight: 600;
-        margin-bottom: 6px;
-        font-family: monospace;
-      }
-      .model-card p {
-        font-size: 13px;
+
+      .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 18px;
         color: var(--muted);
+        font-size: 0.96rem;
       }
-      .model-install {
-        margin-top: 12px;
-        background: #0d1117;
-        border: 1px solid var(--border);
-        border-radius: 6px;
+
+      .nav-links a:hover,
+      .footer-links a:hover,
+      .inline-link:hover {
+        color: var(--accent-strong);
+      }
+
+      .hero {
+        padding: 56px 0 28px;
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+        gap: 28px;
+        align-items: center;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(23, 19, 15, 0.08);
+        color: var(--accent-strong);
+        font-size: 0.82rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .hero-copy h1 {
+        font-size: clamp(3rem, 8vw, 5.7rem);
+        line-height: 0.95;
+        margin: 18px 0 16px;
+        letter-spacing: -0.05em;
+        max-width: 10ch;
+      }
+
+      .hero-copy p {
+        margin: 0;
+        max-width: 58ch;
+        color: var(--muted);
+        font-size: 1.08rem;
+        line-height: 1.7;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 28px;
+      }
+
+      .btn {
+        border: 1px solid transparent;
+        border-radius: 16px;
+        padding: 14px 18px;
+        font-weight: 600;
+        transition:
+          transform 0.18s ease,
+          border-color 0.18s ease,
+          background 0.18s ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-1px);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--accent), #ec8f39);
+        color: var(--white);
+        box-shadow: 0 14px 28px rgba(198, 95, 22, 0.28);
+      }
+
+      .btn-secondary {
+        border-color: rgba(23, 19, 15, 0.12);
+        background: rgba(255, 255, 255, 0.78);
+      }
+
+      .hero-meta {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 24px;
+      }
+
+      .meta-card {
+        padding: 14px 16px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(23, 19, 15, 0.08);
+      }
+
+      .meta-card strong {
+        display: block;
+        font-size: 1.2rem;
+      }
+
+      .meta-card span {
+        display: block;
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .hero-panel,
+      .section-card,
+      .demo-shell,
+      .info-card,
+      .provider-card,
+      .command-card,
+      .footer-card {
+        background: var(--paper);
+        border: 1px solid rgba(23, 19, 15, 0.08);
+        box-shadow: var(--shadow);
+      }
+
+      .hero-panel {
+        border-radius: 28px;
+        overflow: hidden;
+      }
+
+      .hero-panel-top {
+        background: var(--panel);
+        color: #f8f2e8;
+        padding: 18px 20px 0;
+      }
+
+      .window-dots {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+
+      .window-dots span {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.24);
+      }
+
+      .panel-command-list {
+        display: grid;
+        gap: 10px;
+        padding-bottom: 18px;
+      }
+
+      .panel-command {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 12px;
+        align-items: center;
+        padding: 14px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.06);
+      }
+
+      .panel-command strong {
+        font-size: 0.96rem;
+      }
+
+      .panel-command span,
+      .panel-command code {
+        color: rgba(248, 242, 232, 0.75);
+        font-size: 0.82rem;
+      }
+
+      .panel-command code {
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .hero-panel-bottom {
+        padding: 18px 20px 20px;
+        display: grid;
+        gap: 14px;
+      }
+
+      .hero-chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .chip {
         padding: 8px 12px;
-        font-size: 12px;
-        font-family: monospace;
-        color: #86efac;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-      .copy-btn {
-        background: none;
-        border: none;
-        color: var(--muted);
-        cursor: pointer;
-        font-size: 11px;
-        padding: 2px 6px;
+        border-radius: 999px;
+        background: var(--amber-soft);
+        color: var(--accent-strong);
+        font-size: 0.82rem;
+        border: 1px solid rgba(198, 95, 22, 0.16);
       }
 
-      /* ── Providers grid ── */
-      .providers-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: 24px;
+      section {
+        padding: 34px 0;
       }
-      .provider-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 12px;
+
+      .section-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        align-items: end;
+        margin-bottom: 20px;
+      }
+
+      .section-kicker {
+        color: var(--accent-strong);
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        font-size: 0.8rem;
+        margin-bottom: 8px;
+      }
+
+      .section-head h2 {
+        margin: 0;
+        font-size: clamp(2rem, 4vw, 3rem);
+        letter-spacing: -0.04em;
+      }
+
+      .section-head p {
+        margin: 0;
+        max-width: 60ch;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .feature-grid,
+      .provider-grid,
+      .command-grid,
+      .support-grid {
+        display: grid;
+        gap: 16px;
+      }
+
+      .feature-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .section-card {
+        border-radius: 24px;
+        padding: 22px;
+      }
+
+      .section-card h3,
+      .info-card h3,
+      .provider-card h3,
+      .command-card h3 {
+        margin: 0 0 10px;
+        font-size: 1.2rem;
+      }
+
+      .section-card p,
+      .info-card p,
+      .provider-card p,
+      .command-card p,
+      .support-card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .section-card ul,
+      .provider-card ul {
+        margin: 14px 0 0;
+        padding-left: 18px;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .section-card li + li,
+      .provider-card li + li {
+        margin-top: 6px;
+      }
+
+      .demo-shell {
+        border-radius: 30px;
         padding: 20px;
       }
-      .provider-header {
+
+      .demo-toolbar {
         display: flex;
-        align-items: center;
-        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
         margin-bottom: 16px;
-      }
-      .provider-icon {
-        font-size: 24px;
-      }
-      .provider-header h3 {
-        font-size: 16px;
-        font-weight: 600;
-      }
-      .free-badge {
-        font-size: 11px;
-        font-weight: 600;
-        padding: 2px 8px;
-        border-radius: 10px;
-        background: #14532d;
-        color: #86efac;
-      }
-      .provider-steps {
-        list-style: none;
-        margin-bottom: 16px;
-      }
-      .provider-steps li {
-        display: flex;
-        align-items: flex-start;
-        margin-bottom: 8px;
-      }
-      .provider-steps li span:first-child {
-        width: 24px;
-        height: 24px;
-        flex-shrink: 0;
-        background: var(--accent);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 13px;
-        font-weight: 700;
-        color: #fff;
-        margin-right: 8px;
-      }
-      .provider-link {
-        display: inline-block;
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--accent);
-        text-decoration: none;
-      }
-      .provider-link:hover {
-        text-decoration: underline;
       }
 
-      /* ── Footer ── */
-      footer {
-        text-align: center;
-        padding: 40px 24px;
-        border-top: 1px solid var(--border);
-        margin-top: 60px;
+      .demo-prompt {
+        border: 1px solid rgba(23, 19, 15, 0.1);
+        background: rgba(255, 255, 255, 0.78);
+        color: var(--text);
+        border-radius: 999px;
+        padding: 10px 14px;
+        cursor: pointer;
+        transition:
+          transform 0.18s ease,
+          border-color 0.18s ease,
+          background 0.18s ease;
       }
-      footer p {
+
+      .demo-prompt:hover,
+      .demo-prompt.active {
+        transform: translateY(-1px);
+        border-color: rgba(198, 95, 22, 0.3);
+        background: var(--amber-soft);
+      }
+
+      .demo-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr) minmax(260px, 0.85fr);
+        gap: 18px;
+      }
+
+      .demo-panel {
+        border-radius: 24px;
+        overflow: hidden;
+        background: var(--panel);
+        color: #f8f2e8;
+      }
+
+      .demo-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        padding: 16px 18px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .demo-header strong {
+        display: block;
+      }
+
+      .demo-header span {
+        color: rgba(248, 242, 232, 0.72);
+        font-size: 0.86rem;
+      }
+
+      .demo-status {
+        display: inline-flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .demo-status-pill {
+        border-radius: 999px;
+        padding: 7px 10px;
+        font-size: 0.78rem;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .chat-stream {
+        min-height: 520px;
+        max-height: 520px;
+        overflow: auto;
+        padding: 18px;
+        display: grid;
+        gap: 14px;
+      }
+
+      .bubble {
+        border-radius: 18px;
+        padding: 14px 16px;
+        max-width: 90%;
+      }
+
+      .bubble.user {
+        justify-self: end;
+        background: rgba(198, 95, 22, 0.18);
+      }
+
+      .bubble.assistant {
+        justify-self: start;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .bubble.system {
+        justify-self: start;
+        background: rgba(15, 118, 110, 0.18);
+      }
+
+      .bubble-label {
+        display: block;
         margin-bottom: 8px;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: rgba(248, 242, 232, 0.66);
       }
-      footer a {
+
+      .bubble p {
+        margin: 0;
+        line-height: 1.7;
+      }
+
+      .bubble pre {
+        margin: 12px 0 0;
+        padding: 14px;
+        border-radius: 16px;
+        overflow: auto;
+        background: rgba(0, 0, 0, 0.26);
+        color: #f5efe2;
+        font-size: 0.84rem;
+        line-height: 1.55;
+      }
+
+      .demo-compose {
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 14px 18px 18px;
+        display: grid;
+        gap: 12px;
+      }
+
+      .demo-input-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+      }
+
+      .demo-input {
+        width: 100%;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.06);
+        color: #f8f2e8;
+        border-radius: 16px;
+        padding: 14px 16px;
+        outline: none;
+      }
+
+      .demo-input::placeholder {
+        color: rgba(248, 242, 232, 0.46);
+      }
+
+      .demo-run {
+        border: 0;
+        background: linear-gradient(135deg, var(--accent), #ec8f39);
+        color: var(--white);
+        border-radius: 16px;
+        padding: 14px 18px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      .demo-side {
+        display: grid;
+        gap: 16px;
+      }
+
+      .info-card,
+      .provider-card,
+      .command-card,
+      .support-card,
+      .footer-card {
+        border-radius: 24px;
+        padding: 20px;
+      }
+
+      .info-card dl {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 12px 14px;
+        margin: 0;
+      }
+
+      .info-card dt {
+        font-size: 0.82rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--accent-strong);
+      }
+
+      .info-card dd {
+        margin: 0;
         color: var(--muted);
       }
-      footer a:hover {
-        color: var(--text);
-        text-decoration: none;
+
+      .info-card ul {
+        margin: 14px 0 0;
+        padding-left: 18px;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .command-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .command-card code {
+        display: inline-flex;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: var(--teal-soft);
+        color: var(--teal);
+        margin-top: 12px;
+      }
+
+      .provider-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+      }
+
+      .provider-badge {
+        display: inline-flex;
+        margin-bottom: 12px;
+        padding: 7px 10px;
+        border-radius: 999px;
+        background: var(--teal-soft);
+        color: var(--teal);
+        font-size: 0.78rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .support-grid {
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      }
+
+      .support-card {
+        background: var(--paper);
+        border: 1px solid rgba(23, 19, 15, 0.08);
+        box-shadow: var(--shadow);
+      }
+
+      .support-card pre {
+        margin: 14px 0 0;
+        padding: 16px;
+        border-radius: 18px;
+        background: #19151f;
+        color: #f5efe2;
+        overflow: auto;
+        font-size: 0.86rem;
+        line-height: 1.6;
+      }
+
+      .support-card .code-block-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        margin-top: 16px;
+      }
+
+      .copy-btn {
+        border: 1px solid rgba(23, 19, 15, 0.12);
+        background: rgba(255, 255, 255, 0.84);
+        border-radius: 999px;
+        padding: 9px 12px;
+        cursor: pointer;
+      }
+
+      footer {
+        padding: 24px 0 42px;
+      }
+
+      .footer-card {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        align-items: center;
+      }
+
+      .footer-card p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        color: var(--muted);
+      }
+
+      .inline-note {
+        display: inline-flex;
+        margin-top: 14px;
+        padding: 10px 12px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(23, 19, 15, 0.06);
+        color: var(--muted);
+      }
+
+      @media (max-width: 1120px) {
+        .feature-grid,
+        .provider-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 980px) {
+        .hero,
+        .demo-grid,
+        .support-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-copy h1 {
+          max-width: none;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .nav-inner,
+        .page-shell {
+          width: min(100% - 24px, 1200px);
+        }
+
+        .nav-inner {
+          padding: 14px 0;
+        }
+
+        .nav-links {
+          display: none;
+        }
+
+        .hero {
+          padding-top: 34px;
+        }
+
+        .hero-meta,
+        .feature-grid,
+        .command-grid,
+        .provider-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .section-head,
+        .footer-card {
+          display: grid;
+        }
+
+        .chat-stream {
+          min-height: 420px;
+          max-height: 420px;
+        }
+
+        .demo-input-row {
+          grid-template-columns: 1fr;
+        }
       }
     </style>
   </head>
   <body>
     <nav>
-      <div class="nav-logo">Code Janitor</div>
-      <div class="nav-links">
-        <a href="#features">Features</a>
-        <a href="#setup">Setup</a>
-        <a href="#providers">Providers</a>
+      <div class="nav-inner">
+        <a class="brand" href="#top">
+          <span class="brand-mark">CJ</span>
+          <span>Code Janitor</span>
+        </a>
+        <div class="nav-links">
+          <a href="#product">Product</a>
+          <a href="#demo">Live Demo</a>
+          <a href="#commands">Commands</a>
+          <a href="#providers">Providers</a>
+          <a href="#cli">CLI</a>
+          <a href="#arduino">Arduino</a>
+        </div>
       </div>
     </nav>
 
-    <div class="hero">
-      <span class="badge">AI-Powered Code Assistant</span>
-      <h1>Code Janitor</h1>
-      <p>
-        A VS Code extension that helps you write better code with AI assistance,
-        auto-formatting, and real-time fixes.
-      </p>
-      <div class="hero-btns">
-        <a
-          href="https://marketplace.visualstudio.com/items?itemName=Debanshu2005.code-janitor"
-          target="_blank"
-          class="btn btn-primary"
-          >Install →</a
-        >
-        <a
-          href="https://github.com/Debanshu2005/code-janitor"
-          target="_blank"
-          class="btn btn-outline"
-          >GitHub →</a
-        >
-      </div>
-    </div>
-
-    <section id="features">
-      <div class="section-label">What's Included</div>
-      <h2>Features</h2>
-      <p class="section-sub">Everything Code Janitor can do out of the box.</p>
-      <div class="features">
-        <div class="feature">
-          <div class="feature-icon">🔧</div>
-          <h3>Auto Format</h3>
+    <main class="page-shell" id="top">
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow">VS Code extension + local CLI + Arduino IDE agent</div>
+          <h1>Clean the code. Keep the context.</h1>
           <p>
-            Format Python, JS, Java, C/C++, and HTML with <code>Alt+D</code> or
-            on save.
+            Code Janitor combines fast formatting, AI-guided edits, live preview,
+            Graphify workspace context, testing helpers, documentation generation,
+            and a local CLI. The website below mirrors the current repo: the main
+            VS Code extension is broad, the CLI works outside the editor, and the
+            Arduino package is a narrower standalone agent.
           </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">⚡</div>
-          <h3>Real-time Fixes</h3>
-          <p>
-            Auto-corrects syntax errors as you type with a configurable delay.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">🤖</div>
-          <h3>AI Chat</h3>
-          <p>
-            Ask questions about your codebase, get fixes, refactors, and docs
-            generated.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">👁</div>
-          <h3>Live Preview</h3>
-          <p>
-            Preview HTML and React files in a live webview panel with
-            <code>Alt+P</code>.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">🔍</div>
-          <h3>ESLint Integration</h3>
-          <p>
-            Lint JavaScript files and see issues in the Problems panel with
-            <code>Alt+L</code>.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">✅</div>
-          <h3>Frontend Validator</h3>
-          <p>
-            Validate HTML, CSS, and JS dependencies with <code>Alt+V</code>.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">🛡</div>
-          <h3>AI Safety Guards</h3>
-          <p>
-            Built-in security patterns to prevent malicious code execution and data exfiltration.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">🌍</div>
-          <h3>Current Affairs Awareness</h3>
-          <p>
-            Stay updated with real-time news and events through integrated web fetching.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">📊</div>
-          <h3>Customizable Token Limits</h3>
-          <p>
-            Adjust token limits for different AI models and tasks.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">📈</div>
-          <h3>Graphify Integration</h3>
-          <p>
-            Visualize codebase architecture and dependencies with interactive graphs.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">🎥</div>
-          <h3>YouTube Integration</h3>
-          <p>
-            Search and embed YouTube videos directly from the chat interface.
-          </p>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">🤖</div>
-          <h3>Arduino IDE Support</h3>
-          <p>
-            AI-assisted coding and debugging for Arduino projects.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section id="setup">
-      <div class="section-label">Getting Started</div>
-      <h2>Setup</h2>
-      <p class="section-sub">
-        Follow these steps to install and configure Code Janitor.
-      </p>
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">1</div>
-          <div class="step-body">
-            <h3>Install the Extension</h3>
-            <p>
-              Search for "Code Janitor" in the VS Code Marketplace and install it.
-            </p>
+          <div class="hero-actions">
+            <a
+              class="btn btn-primary"
+              href="https://marketplace.visualstudio.com/items?itemName=Debanshu2005.code-janitor"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Install VS Code extension
+            </a>
+            <a
+              class="btn btn-secondary"
+              href="https://github.com/Debanshu2005/code-janitor"
+              target="_blank"
+              rel="noreferrer"
+            >
+              View GitHub repo
+            </a>
+            <a class="btn btn-secondary" href="arduino-ide.html">Open Arduino page</a>
           </div>
-        </div>
-        <div class="step">
-          <div class="step-num">2</div>
-          <div class="step-body">
-            <h3>Configure Settings</h3>
-            <p>
-              Open VS Code settings (<code>Ctrl+,</code>) and search for
-              "Code Janitor". Enable the extension and configure your preferred
-              AI provider.
-            </p>
-            <div class="model-install">
-              <code>codeJanitor.ai.enabled</code>
-              <button class="copy-btn" onclick="copyConfig(this)">Copy</button>
+          <div class="hero-meta">
+            <div class="meta-card">
+              <strong>5</strong>
+              <span>AI providers in the extension settings</span>
+            </div>
+            <div class="meta-card">
+              <strong>10</strong>
+              <span>Default keyboard shortcuts in the main package</span>
+            </div>
+            <div class="meta-card">
+              <strong>CLI</strong>
+              <span>Batch cleanup, read-only chat, and agent mode</span>
             </div>
           </div>
         </div>
-        <div class="step">
-          <div class="step-num">3</div>
-          <div class="step-body">
-            <h3>Start Using</h3>
+
+        <div class="hero-panel">
+          <div class="hero-panel-top">
+            <div class="window-dots">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="panel-command-list">
+              <div class="panel-command">
+                <strong>Format Code</strong>
+                <span>Clean and repair supported files</span>
+                <code>Alt+D</code>
+              </div>
+              <div class="panel-command">
+                <strong>Open AI Chat</strong>
+                <span>Run structured fixes, reviews, and searches</span>
+                <code>Ctrl+Alt+C</code>
+              </div>
+              <div class="panel-command">
+                <strong>Visualize Codebase Graph</strong>
+                <span>Load Graphify context for architecture-aware help</span>
+                <code>Ctrl+Alt+G</code>
+              </div>
+              <div class="panel-command">
+                <strong>Generate Repository Documentation</strong>
+                <span>README, API docs, and contributing guides</span>
+                <code>Ctrl+Alt+D</code>
+              </div>
+            </div>
+          </div>
+          <div class="hero-panel-bottom">
+            <div class="hero-chip-row">
+              <span class="chip">Workspace memory mirrored to <code>workspacememory.md</code></span>
+              <span class="chip">Edge-case generation and test execution</span>
+              <span class="chip">Web search and YouTube search in chat</span>
+            </div>
+            <span class="inline-note">
+              Auto-correction and auto-fix on save are present, but both are disabled by default in the manifest for safety.
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <section id="product">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Product Surface</div>
+            <h2>What the repo actually ships</h2>
+          </div>
+          <p>
+            The site now reflects the current README, package manifests, and CLI
+            help. That means highlighting the main extension, the standalone
+            Arduino agent, and the new terminal workflow instead of treating Code
+            Janitor like a single generic chat widget.
+          </p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="section-card">
+            <h3>Editor cleanup and repair</h3>
             <p>
-              Open a file and use the extension's features like auto-formatting,
-              real-time fixes, and AI chat.
+              Format and fix code across JavaScript, TypeScript, Python,
+              C/C++/Arduino, Java, HTML, and frontend files. Live preview,
+              frontend validation, ESLint, and active-file bug scans are built
+              in.
             </p>
-          </div>
-        </div>
-      </div>
-    </section>
+            <ul>
+              <li><code>Alt+D</code> format code</li>
+              <li><code>Alt+L</code> lint JavaScript with ESLint</li>
+              <li><code>Alt+P</code> open live preview</li>
+              <li><code>Alt+V</code> validate frontend dependencies</li>
+            </ul>
+          </article>
 
-    <section id="providers">
-      <div class="section-label">AI Providers</div>
-      <h2>Supported Providers</h2>
-      <p class="section-sub">
-        Code Janitor supports multiple AI providers. Choose the one that fits your
-        needs.
-      </p>
-      <div class="providers-grid">
-        <div class="provider-card">
-          <div class="provider-header">
-            <div class="provider-icon">🖥</div>
-            <h3>Ollama (Local)</h3>
-            <span class="free-badge">No Key Needed</span>
-          </div>
-          <ul class="provider-steps">
-            <li>
-              <span>1.</span
-              ><span
-                >Download and install
-                <a href="https://ollama.com" target="_blank">Ollama</a> for your
-                OS.</span
-              >
-            </li>
-            <li>
-              <span>2.</span
-              ><span
-                >Open a terminal and run
-                <code>ollama pull qwen2.5-coder:7b</code> (or any model
-                above).</span
-              >
-            </li>
-            <li>
-              <span>3.</span
-              ><span
-                >Ollama runs automatically in the background. No API key
-                required.</span
-              >
-            </li>
-            <li>
-              <span>4.</span
-              ><span
-                >In the chat panel, select <strong>Ollama (local)</strong> — it
-                will detect and list your installed models automatically in the
-                model dropdown.</span
-              >
-            </li>
-          </ul>
-          <a
-            class="provider-link"
-            href="https://ollama.com/download"
-            target="_blank"
-            >Download Ollama →</a
-          >
+          <article class="section-card">
+            <h3>AI workflow with guardrails</h3>
+            <p>
+              The chat panel supports structured FILE and PATCH edits, pre-edit
+              checks, post-edit verification, performance monitoring, workspace
+              scans, GitHub context, and provider switching across Ollama, Groq,
+              OpenRouter, Anthropic, and NVIDIA.
+            </p>
+            <ul>
+              <li>Quick Fix, Quick Fix All, and bug scans</li>
+              <li>Web search and YouTube search in chat</li>
+              <li>Self-healing slow-model monitoring</li>
+              <li>Security review gate for AI-generated edits</li>
+            </ul>
+          </article>
+
+          <article class="section-card">
+            <h3>Context, testing, and planning</h3>
+            <p>
+              Code Janitor can refresh a persistent workspace ledger, render a
+              code graph, generate edge cases, execute tests with reports, build
+              repository documentation, track TODOs, and enable an outcome-based
+              project planner.
+            </p>
+            <ul>
+              <li>Workspace memory mirrored to the repo root</li>
+              <li>Graphify-aware architecture context</li>
+              <li><code>Alt+E</code> edge cases and <code>Alt+T</code> test runs</li>
+              <li>CLI chat and agent subcommands outside the editor</li>
+            </ul>
+          </article>
         </div>
-        <div class="provider-card">
-          <div class="provider-header">
-            <div class="provider-icon">🌐</div>
-            <h3>OpenRouter</h3>
-            <span class="free-badge">Free Tier</span>
+      </section>
+
+      <section id="demo">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Live Demo</div>
+            <h2>Click through a Code Janitor session</h2>
           </div>
-          <ul class="provider-steps">
-            <li>
-              <span>1.</span
-              ><span
-                >Sign up for an API key at
-                <a href="https://openrouter.ai" target="_blank">OpenRouter</a>.</span
-              >
-            </li>
-            <li>
-              <span>2.</span
-              ><span
-                >Configure the provider in settings with your API key.</span
-              >
-            </li>
-            <li>
-              <span>3.</span
-              ><span
-                >Select <strong>OpenRouter</strong> in the chat panel and choose
-                a model.</span
-              >
-            </li>
-          </ul>
-          <a
-            class="provider-link"
-            href="https://openrouter.ai"
-            target="_blank"
-            >Get API Key →</a
-          >
+          <p>
+            This is a browser-side simulation of how the product behaves based on
+            the real commands and workflows in the repo. Pick a prompt, or type
+            one below, to see how Code Janitor scans context, proposes edits, and
+            reports verification.
+          </p>
         </div>
-        <div class="provider-card">
-          <div class="provider-header">
-            <div class="provider-icon">🤖</div>
-            <h3>Anthropic</h3>
-            <span class="free-badge">Paid</span>
+
+        <div class="demo-shell">
+          <div class="demo-toolbar" id="demo-toolbar"></div>
+          <div class="demo-grid">
+            <div class="demo-panel">
+              <div class="demo-header">
+                <div>
+                  <strong id="demo-title">Interactive chat walkthrough</strong>
+                  <span id="demo-subtitle">Structured edits, verification, and context loading</span>
+                </div>
+                <div class="demo-status" id="demo-status"></div>
+              </div>
+              <div class="chat-stream" id="chat-stream"></div>
+              <div class="demo-compose">
+                <div class="demo-input-row">
+                  <input
+                    class="demo-input"
+                    id="demo-input"
+                    type="text"
+                    placeholder="Type something like: fix the broken debounce helper"
+                  />
+                  <button class="demo-run" id="demo-run" type="button">Run demo</button>
+                </div>
+                <span style="color: rgba(248, 242, 232, 0.66); font-size: 0.82rem">
+                  Keyword matching routes your prompt to the nearest scenario: fix,
+                  tests, memory, CLI, or Arduino graph.
+                </span>
+              </div>
+            </div>
+
+            <div class="demo-side">
+              <article class="info-card">
+                <h3>Scenario summary</h3>
+                <dl id="demo-summary"></dl>
+              </article>
+              <article class="info-card">
+                <h3>Actions emitted</h3>
+                <ul id="demo-actions"></ul>
+              </article>
+              <article class="info-card">
+                <h3>Why it matters</h3>
+                <p id="demo-outcome">
+                  Code Janitor does more than answer text prompts. It loads
+                  workspace context, picks commands, applies edits, and reports
+                  what happened after verification.
+                </p>
+              </article>
+            </div>
           </div>
-          <ul class="provider-steps">
-            <li>
-              <span>1.</span
-              ><span
-                >Sign up for an API key at
-                <a href="https://anthropic.com" target="_blank">Anthropic</a>.</span
-              >
-            </li>
-            <li>
-              <span>2.</span
-              ><span
-                >Configure the provider in settings with your API key.</span
-              >
-            </li>
-            <li>
-              <span>3.</span
-              ><span
-                >Select <strong>Anthropic</strong> in the chat panel and choose
-                a model.</span
-              >
-            </li>
-          </ul>
-          <a
-            class="provider-link"
-            href="https://anthropic.com"
-            target="_blank"
-            >Get API Key →</a
-          >
         </div>
-        <div class="provider-card">
-          <div class="provider-header">
-            <div class="provider-icon">💻</div>
+      </section>
+
+      <section id="commands">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Commands</div>
+            <h2>Main extension shortcuts and commands</h2>
+          </div>
+          <p>
+            These cards reflect the current main package manifest. A few popular
+            flows also live only in the Command Palette, such as refreshing
+            workspace memory, opening the generated ledger, and showing the AI
+            performance report.
+          </p>
+        </div>
+
+        <div class="command-grid">
+          <article class="command-card">
+            <h3>Format and inspect</h3>
+            <p>
+              Run cleanup, linting, preview, validation, and targeted bug scans
+              from the keyboard while you stay in the editor.
+            </p>
+            <code>Alt+D Alt+L Alt+P Alt+V Alt+B</code>
+          </article>
+          <article class="command-card">
+            <h3>Chat and graph context</h3>
+            <p>
+              Open the AI chat sidebar and load Graphify-backed architecture
+              context without leaving the current workspace.
+            </p>
+            <code>Ctrl+Alt+C Ctrl+Alt+G</code>
+          </article>
+          <article class="command-card">
+            <h3>Testing toolkit</h3>
+            <p>
+              Generate edge cases, execute tests with a report, and keep AI
+              provider settings separate when you want testing-specific models.
+            </p>
+            <code>Alt+E Alt+T</code>
+          </article>
+          <article class="command-card">
+            <h3>Documentation and repo context</h3>
+            <p>
+              Generate repository documentation, inspect GitHub repository
+              context, refresh workspace memory, and open the mirrored ledger.
+            </p>
+            <code>Ctrl+Alt+D</code>
+          </article>
+        </div>
+      </section>
+
+      <section id="providers">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Providers</div>
+            <h2>Five AI backends in the main settings</h2>
+          </div>
+          <p>
+            The current manifests expose five providers. Ollama is the default
+            local option, while the cloud providers cover faster hosted models,
+            broader catalogs, and NVIDIA NIM integration.
+          </p>
+        </div>
+
+        <div class="provider-grid">
+          <article class="provider-card">
+            <span class="provider-badge">Local default</span>
+            <h3>Ollama</h3>
+            <p>
+              Best for local use. The repo examples use <code>http://localhost:11434</code> and recommend small coder models such as <code>qwen2.5-coder:1.5b</code>.
+            </p>
+          </article>
+          <article class="provider-card">
+            <span class="provider-badge">Fast cloud</span>
             <h3>Groq</h3>
-            <span class="free-badge">Free Tier</span>
-          </div>
-          <ul class="provider-steps">
-            <li>
-              <span>1.</span
-              ><span
-                >Sign up for an API key at
-                <a href="https://groq.com" target="_blank">Groq</a>.</span
-              >
-            </li>
-            <li>
-              <span>2.</span
-              ><span
-                >Configure the provider in settings with your API key.</span
-              >
-            </li>
-            <li>
-              <span>3.</span
-              ><span
-                >Select <strong>Groq</strong> in the chat panel and choose
-                a model.</span
-              >
-            </li>
-          </ul>
-          <a
-            class="provider-link"
-            href="https://groq.com"
-            target="_blank"
-            >Get API Key →</a
-          >
+            <p>
+              Presented in the repo as a fast hosted option. Good for quick chat,
+              reviews, and lighter turnaround when you do not want local models.
+            </p>
+          </article>
+          <article class="provider-card">
+            <span class="provider-badge">Wide catalog</span>
+            <h3>OpenRouter</h3>
+            <p>
+              Useful when you want to choose from many models. The repo examples
+              reference OpenRouter coder slugs directly in settings and CLI mode.
+            </p>
+          </article>
+          <article class="provider-card">
+            <span class="provider-badge">Claude</span>
+            <h3>Anthropic</h3>
+            <p>
+              Available in both the extension and CLI. Fits deeper reasoning,
+              review-style tasks, and narrated agent workflows when you want a
+              hosted model.
+            </p>
+          </article>
+          <article class="provider-card">
+            <span class="provider-badge">NIM</span>
+            <h3>NVIDIA</h3>
+            <p>
+              Integrated through NVIDIA NIM with runtime model lookup in the main
+              package. The repo suggests <code>meta/llama-3.1-8b-instruct</code> as a starting point.
+            </p>
+          </article>
         </div>
-        <div class="provider-card">
-          <div class="provider-header">
-            <div class="provider-icon">💡</div>
-            <h3>NVIDIA NIM</h3>
-            <span class="free-badge">Free Tier</span>
+      </section>
+
+      <section id="cli">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">CLI Mode</div>
+            <h2>Use Code Janitor outside the editor</h2>
           </div>
-          <ul class="provider-steps">
-            <li>
-              <span>1.</span
-              ><span
-                >Sign up for an API key at
-                <a href="https://developer.nvidia.com/nvidia-ai-inference-microservices" target="_blank">NVIDIA NIM</a>.</span
-              >
-            </li>
-            <li>
-              <span>2.</span
-              ><span
-                >Configure the provider in settings with your API key.</span
-              >
-            </li>
-            <li>
-              <span>3.</span
-              ><span
-                >Select <strong>NVIDIA NIM</strong> in the chat panel and choose
-                a model.</span
-              >
-            </li>
-          </ul>
+          <p>
+            The repo now ships a local CLI that can clean files, run a read-only
+            terminal chat, or start a narrated agent loop that inspects, edits,
+            and verifies changes. This section uses the current built-in help text.
+          </p>
+        </div>
+
+        <div class="support-grid">
+          <article class="support-card">
+            <h3>Install and run</h3>
+            <div class="code-block-row">
+              <span class="inline-note">Batch cleanup, terminal chat, and agent mode</span>
+              <button class="copy-btn" data-copy-target="cli-install">Copy snippet</button>
+            </div>
+            <pre id="cli-install"><code>npm install
+npm link
+
+code-janitor src --check
+code-janitor . --json
+code-janitor chat explain src/extension.js --mode heavy
+code-janitor agent debug npm test failure --provider anthropic --max-steps 8</code></pre>
+          </article>
+          <article class="support-card">
+            <h3>Supported cleanup targets</h3>
+            <p>
+              The README currently lists one file or one directory as the target
+              surface, with support centered on JavaScript/TypeScript, Python,
+              C/C++/Arduino, Java, and HTML.
+            </p>
+            <pre><code>code-janitor [path] [options]
+--check    report changes without writing
+--write    apply fixes to disk
+--json     print final report as JSON
+--ai       allow AI-assisted fixes
+--provider anthropic | groq | nvidia | ollama | openrouter</code></pre>
+          </article>
+        </div>
+      </section>
+
+      <section id="arduino">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Arduino IDE</div>
+            <h2>A narrower standalone extension for Arduino workflows</h2>
+          </div>
+          <p>
+            The Arduino package in the repo is not the full VS Code feature set.
+            It focuses on chat, guided edits, source control, Graphify context,
+            and Arduino-specific helpers like Mermaid-based circuit views and
+            chat session management.
+          </p>
+        </div>
+
+        <div class="support-grid">
+          <article class="support-card">
+            <h3>What is different on Arduino</h3>
+            <p>
+              The standalone Arduino agent includes chat, source control,
+              project-graph visualization, provider switching, workspace scans,
+              YouTube search, and Mermaid rendering. It does not mirror every
+              command from the main VS Code extension.
+            </p>
+            <span class="inline-note">
+              Open the dedicated page for Arduino-specific commands, install
+              notes, and package details.
+            </span>
+          </article>
+          <article class="support-card">
+            <h3>Default shortcuts</h3>
+            <pre><code>Ctrl+Alt+A / Cmd+Alt+A  open welcome + AI chat
+Ctrl+Alt+G / Cmd+Alt+G  open source control
+Ctrl+Alt+V / Cmd+Alt+V  visualize project graph</code></pre>
+            <div class="code-block-row">
+              <a class="btn btn-secondary" href="arduino-ide.html">Open Arduino page</a>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="page-shell">
+      <div class="footer-card">
+        <p>
+          Code Janitor is maintained by
           <a
-            class="provider-link"
-            href="https://developer.nvidia.com/nvidia-ai-inference-microservices"
+            class="inline-link"
+            href="https://github.com/Debanshu2005"
             target="_blank"
-            >Get API Key →</a
+            rel="noreferrer"
           >
+            Debanshu2005
+          </a>
+          and published under the MIT license.
+        </p>
+        <div class="footer-links">
+          <a
+            href="https://github.com/Debanshu2005/code-janitor"
+            target="_blank"
+            rel="noreferrer"
+          >
+            GitHub
+          </a>
+          <a
+            href="https://marketplace.visualstudio.com/items?itemName=Debanshu2005.code-janitor"
+            target="_blank"
+            rel="noreferrer"
+          >
+            VS Code Marketplace
+          </a>
+          <a
+            href="https://github.com/Debanshu2005/code-janitor/releases"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Releases
+          </a>
         </div>
       </div>
-    </section>
-
-    <footer>
-      <p>
-        Code Janitor · MIT License · Built by
-        <a href="https://github.com/Debanshu2005" target="_blank"
-          >Debanshu2005</a
-        >
-      </p>
-      <p style="margin-top: 8px">
-        <a href="https://github.com/Debanshu2005/code-janitor" target="_blank"
-          >GitHub</a
-        >
-        ·
-        <a
-          href="https://marketplace.visualstudio.com/items?itemName=Debanshu2005.code-janitor"
-          target="_blank"
-          >VS Code Marketplace</a
-        >
-      </p>
     </footer>
 
     <script>
-      function copyCmd(btn, text) {
-        navigator.clipboard.writeText(text).then(() => {
-          btn.textContent = "Copied!";
-          setTimeout(() => (btn.textContent = "Copy"), 1500);
-        });
+      const demoScenarios = {
+        fix: {
+          label: "Fix a bug",
+          title: "Fix an async bug in a real file",
+          subtitle: "Workspace scan -> PATCH edit -> verification",
+          status: ["Groq", "heavy mode", "PATCH + tests"],
+          prompt: "Fix the broken debounce helper in src/search.ts and rerun the related tests.",
+          summary: [
+            ["Surface", "VS Code AI chat"],
+            ["Provider", "Groq"],
+            ["Focus", "Structured patch edit"],
+            ["Verification", "Syntax check + npm test"]
+          ],
+          actions: [
+            "Scanned the active file and the related test file",
+            "Detected stale timeout cleanup and a missing awaited promise",
+            "Prepared a focused PATCH block instead of rewriting the whole file",
+            "Ran the relevant tests after the change"
+          ],
+          outcome:
+            "This is the everyday Code Janitor loop: load just enough context, edit surgically, then report what verification said instead of claiming success blindly.",
+          messages: [
+            { role: "user", text: "Fix the broken debounce helper in src/search.ts and rerun the related tests." },
+            {
+              role: "system",
+              text: "Scanning workspace context, active file diagnostics, and Graphify hints for src/search.ts."
+            },
+            {
+              role: "assistant",
+              text: "I found two issues: the old timeout can survive a rapid re-render, and the async callback result is not awaited before state is cleared."
+            },
+            {
+              role: "assistant",
+              text: "Applying a small PATCH to keep the edit localized.",
+              code: `PATCH src/search.ts
+@@
+- let timer;
++ let timer = null;
+@@
+- timer = setTimeout(() => run(query), wait);
++ if (timer) clearTimeout(timer);
++ timer = setTimeout(async () => {
++   await run(query);
++   timer = null;
++ }, wait);`
+            },
+            {
+              role: "assistant",
+              text: "Verification finished. TypeScript syntax passed and the related search tests now pass."
+            }
+          ]
+        },
+        tests: {
+          label: "Generate edge cases",
+          title: "Generate tests before shipping",
+          subtitle: "Edge-case generation -> execution report",
+          status: ["Ollama", "deep mode", "edge cases"],
+          prompt: "Generate edge cases for the active validator and tell me which ones still fail.",
+          summary: [
+            ["Surface", "VS Code command + AI assist"],
+            ["Provider", "Ollama"],
+            ["Focus", "Boundary and security cases"],
+            ["Verification", "Execute tests with report"]
+          ],
+          actions: [
+            "Inspected the active file and existing test suite",
+            "Generated boundary, malformed-input, and security cases",
+            "Executed tests and built a summary report",
+            "Called out the remaining failures instead of hiding them"
+          ],
+          outcome:
+            "The repo now has dedicated test generation and execution commands, so the site should show Code Janitor as a test helper, not only a formatter.",
+          messages: [
+            { role: "user", text: "Generate edge cases for the active validator and tell me which ones still fail." },
+            {
+              role: "assistant",
+              text: "I generated cases for empty input, oversized payloads, invalid encodings, and XSS-shaped strings."
+            },
+            {
+              role: "assistant",
+              text: "Drafting the new tests in the project style.",
+              code: `describe("validatePayload edge cases", () => {
+  test("rejects empty body", () => {});
+  test("rejects script-tag payloads", () => {});
+  test("handles 10k character input", () => {});
+});`
+            },
+            {
+              role: "assistant",
+              text: "Execution report: 18 tests passed, 2 failed. The remaining failures point to the oversized payload path and an escaping mismatch in the HTML sanitizer."
+            }
+          ]
+        },
+        memory: {
+          label: "Refresh memory",
+          title: "Build shared workspace context",
+          subtitle: "Graphify-aware ledger -> repo-root mirror",
+          status: ["OpenRouter", "fast mode", "workspace memory"],
+          prompt: "Refresh workspace memory and summarize the current repo state for the next agent.",
+          summary: [
+            ["Surface", "Workspace memory tools"],
+            ["Provider", "OpenRouter"],
+            ["Focus", "Cross-agent handoff"],
+            ["Verification", "Ledger written to both paths"]
+          ],
+          actions: [
+            "Collected recent file changes and Git status",
+            "Read Graphify output when available",
+            "Rendered a Markdown workspace ledger",
+            "Mirrored the summary to graphify-out and workspacememory.md"
+          ],
+          outcome:
+            "This feature is unusual and valuable, so the website now treats it like a first-class capability instead of a hidden implementation detail.",
+          messages: [
+            { role: "user", text: "Refresh workspace memory and summarize the current repo state for the next agent." },
+            {
+              role: "assistant",
+              text: "Collecting recent tracked changes, Git status, and Graphify context before rebuilding the ledger."
+            },
+            {
+              role: "assistant",
+              text: "Writing a shared summary for the next handoff.",
+              code: `graphify-out/WORKSPACE_MEMORY.md
+workspacememory.md
+
+Highlights:
+- Active feature area: landing page + demo rebuild
+- Changed files: index.html, arduino-ide.html
+- Next likely task: verify responsive layout and links`
+            },
+            {
+              role: "assistant",
+              text: "Workspace memory refreshed. The repo ledger is ready for Claude, Codex, Bob, or another agent to pick up without rescanning the whole project."
+            }
+          ]
+        },
+        cli: {
+          label: "CLI agent mode",
+          title: "Run Code Janitor in the terminal",
+          subtitle: "CLI cleanup -> chat -> narrated agent loop",
+          status: ["Anthropic", "agent mode", "terminal"],
+          prompt: "Show me how Code Janitor works from the terminal on a repo with a failing test.",
+          summary: [
+            ["Surface", "Local CLI"],
+            ["Provider", "Anthropic"],
+            ["Focus", "Narrated tool loop"],
+            ["Verification", "JSON report or agent summary"]
+          ],
+          actions: [
+            "Started with a non-destructive repo scan",
+            "Switched from cleanup mode to a narrated agent loop",
+            "Inspected files, proposed edits, and reran tests",
+            "Reported the outcome in terminal-friendly language"
+          ],
+          outcome:
+            "The CLI is no longer a side note. The website now shows it as a real third surface beside the VS Code extension and the Arduino agent.",
+          messages: [
+            { role: "user", text: "Show me how Code Janitor works from the terminal on a repo with a failing test." },
+            {
+              role: "assistant",
+              text: "Start with a check-only pass so you can see what would change before writing anything.",
+              code: `code-janitor src --check
+code-janitor chat explain src/extension.js --mode heavy
+code-janitor agent debug npm test failure --provider anthropic --max-steps 8`
+            },
+            {
+              role: "assistant",
+              text: "In agent mode, Code Janitor narrates the tool loop: inspect the failure, read the file, propose a bounded edit, run verification, and summarize the result."
+            },
+            {
+              role: "assistant",
+              text: "That makes the CLI useful both for batch cleanup and for lightweight repo work when you are away from the editor."
+            }
+          ]
+        },
+        arduino: {
+          label: "Arduino graph",
+          title: "Arduino-specific chat and graph context",
+          subtitle: "Sketch help -> source control -> Mermaid preview",
+          status: ["NVIDIA", "Arduino agent", "Mermaid"],
+          prompt: "Open the Arduino agent, review my sketch, and show the project graph.",
+          summary: [
+            ["Surface", "Standalone Arduino IDE extension"],
+            ["Provider", "NVIDIA"],
+            ["Focus", "Sketch review + Graphify"],
+            ["Verification", "Chat result + graph panel"]
+          ],
+          actions: [
+            "Opened the dedicated Arduino chat panel",
+            "Scanned the workspace for sketch context",
+            "Prepared source control and graph actions",
+            "Rendered a Mermaid-style circuit or project view when useful"
+          ],
+          outcome:
+            "The Arduino package has its own identity in the repo, so the website now treats it as a focused product instead of a footnote.",
+          messages: [
+            { role: "user", text: "Open the Arduino agent, review my sketch, and show the project graph." },
+            {
+              role: "assistant",
+              text: "Opening Code Janitor Arduino and scanning the sketch directory for source control state, related files, and Graphify hints."
+            },
+            {
+              role: "assistant",
+              text: "I can review the sketch, explain the current control flow, and visualize the project graph in the dedicated panel.",
+              code: `Commands
+Code Janitor Arduino: Open Arduino AI Chat
+Code Janitor Arduino: Open Source Control
+Code Janitor Arduino: Visualize Project Graph`
+            },
+            {
+              role: "assistant",
+              text: "If your sketch defines components and wiring clearly, the Arduino package can also generate a Mermaid-style preview to explain the circuit at a glance."
+            }
+          ]
+        }
+      };
+
+      const toolbar = document.getElementById("demo-toolbar");
+      const titleEl = document.getElementById("demo-title");
+      const subtitleEl = document.getElementById("demo-subtitle");
+      const statusEl = document.getElementById("demo-status");
+      const streamEl = document.getElementById("chat-stream");
+      const summaryEl = document.getElementById("demo-summary");
+      const actionsEl = document.getElementById("demo-actions");
+      const outcomeEl = document.getElementById("demo-outcome");
+      const inputEl = document.getElementById("demo-input");
+      const runEl = document.getElementById("demo-run");
+
+      let activeScenarioKey = "fix";
+      let activeTimer = null;
+
+      function clearTimer() {
+        if (activeTimer) {
+          window.clearTimeout(activeTimer);
+          activeTimer = null;
+        }
       }
 
-      function copyConfig(btn) {
-        const text = `"codeJanitor.ai.enabled": true,
-"codeJanitor.ai.provider": "ollama",
-"codeJanitor.ai.ollamaUrl": "http://localhost:11434",
-"codeJanitor.ai.model": "qwen2.5-coder:7b",
-"codeJanitor.ai.timeout": 90000,
-"codeJanitor.autoCorrection.enabled": true,
-"codeJanitor.autoCorrection.delay": 500`;
-        navigator.clipboard.writeText(text).then(() => {
-          btn.textContent = "Copied!";
-          setTimeout(() => (btn.textContent = "Copy"), 1500);
-        });
+      function createBubble(message) {
+        const bubble = document.createElement("div");
+        bubble.className = "bubble " + message.role;
+
+        const label = document.createElement("span");
+        label.className = "bubble-label";
+        label.textContent =
+          message.role === "user"
+            ? "Prompt"
+            : message.role === "assistant"
+              ? "Code Janitor"
+              : "Runtime";
+        bubble.appendChild(label);
+
+        const text = document.createElement("p");
+        text.textContent = message.text;
+        bubble.appendChild(text);
+
+        if (message.code) {
+          const pre = document.createElement("pre");
+          const code = document.createElement("code");
+          code.textContent = message.code;
+          pre.appendChild(code);
+          bubble.appendChild(pre);
+        }
+
+        return bubble;
       }
+
+      function renderScenarioMeta(key) {
+        const scenario = demoScenarios[key];
+        titleEl.textContent = scenario.title;
+        subtitleEl.textContent = scenario.subtitle;
+
+        statusEl.innerHTML = "";
+        scenario.status.forEach((item) => {
+          const pill = document.createElement("span");
+          pill.className = "demo-status-pill";
+          pill.textContent = item;
+          statusEl.appendChild(pill);
+        });
+
+        summaryEl.innerHTML = "";
+        scenario.summary.forEach(([term, value]) => {
+          const dt = document.createElement("dt");
+          dt.textContent = term;
+          const dd = document.createElement("dd");
+          dd.textContent = value;
+          summaryEl.appendChild(dt);
+          summaryEl.appendChild(dd);
+        });
+
+        actionsEl.innerHTML = "";
+        scenario.actions.forEach((item) => {
+          const li = document.createElement("li");
+          li.textContent = item;
+          actionsEl.appendChild(li);
+        });
+
+        outcomeEl.textContent = scenario.outcome;
+      }
+
+      function animateScenario(key) {
+        clearTimer();
+        activeScenarioKey = key;
+        renderScenarioMeta(key);
+        streamEl.innerHTML = "";
+        inputEl.value = demoScenarios[key].prompt;
+
+        document.querySelectorAll(".demo-prompt").forEach((button) => {
+          button.classList.toggle("active", button.dataset.scenario === key);
+        });
+
+        const messages = demoScenarios[key].messages.slice();
+
+        function pushNext() {
+          const message = messages.shift();
+          if (!message) {
+            activeTimer = null;
+            return;
+          }
+
+          streamEl.appendChild(createBubble(message));
+          streamEl.scrollTop = streamEl.scrollHeight;
+          activeTimer = window.setTimeout(pushNext, message.code ? 950 : 720);
+        }
+
+        pushNext();
+      }
+
+      function pickScenarioFromInput(text) {
+        const value = String(text || "").toLowerCase();
+        if (value.includes("arduino") || value.includes("graph")) return "arduino";
+        if (value.includes("cli") || value.includes("terminal") || value.includes("agent")) return "cli";
+        if (value.includes("memory") || value.includes("ledger") || value.includes("handoff")) return "memory";
+        if (value.includes("test") || value.includes("edge") || value.includes("coverage")) return "tests";
+        return "fix";
+      }
+
+      Object.entries(demoScenarios).forEach(([key, scenario]) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "demo-prompt";
+        button.dataset.scenario = key;
+        button.textContent = scenario.label;
+        button.addEventListener("click", () => animateScenario(key));
+        toolbar.appendChild(button);
+      });
+
+      runEl.addEventListener("click", () => {
+        animateScenario(pickScenarioFromInput(inputEl.value));
+      });
+
+      inputEl.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          animateScenario(pickScenarioFromInput(inputEl.value));
+        }
+      });
+
+      document.querySelectorAll("[data-copy-target]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const targetId = button.getAttribute("data-copy-target");
+          const target = document.getElementById(targetId);
+          if (!target) return;
+          navigator.clipboard.writeText(target.textContent || "").then(() => {
+            const previous = button.textContent;
+            button.textContent = "Copied";
+            window.setTimeout(() => {
+              button.textContent = previous;
+            }, 1200);
+          });
+        });
+      });
+
+      animateScenario(activeScenarioKey);
     </script>
   </body>
 </html>
