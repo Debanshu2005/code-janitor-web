@@ -2,9 +2,15 @@
 
 This file is maintained automatically by Code Janitor so Claude, Codex, Bob, and any other AI agent can reuse repo context without rescanning everything from scratch.
 
+<<<<<<< HEAD
 Generated: 2026-05-16T19:21:15.422Z
 Workspace: code-janitor-web
 Workspace root: c:\Users\halde\Desktop\code-janitor-web
+=======
+Generated: 2026-05-16T19:03:01.032Z
+Workspace: code-janitor-web
+Workspace root: d:\CityGrid\my-project\code-janitor-web
+>>>>>>> 358a3e153bd7597f8c741e65343c4b29f0992f90
 Refresh reason: startup
 Output path: graphify-out/WORKSPACE_MEMORY.md
 Shared mirror: workspacememory.md
@@ -31,7 +37,11 @@ Shared mirror: workspacememory.md
 - Logged change events: 0
 - Change mix: none yet
 - Remembered file snapshots: 0
+<<<<<<< HEAD
 - Working tree summary: clean
+=======
+- Working tree summary: 2 modifieds
+>>>>>>> 358a3e153bd7597f8c741e65343c4b29f0992f90
 
 ## Recent Changes
 - No tracked changes recorded in this session yet.
@@ -42,8 +52,14 @@ Shared mirror: workspacememory.md
 ## Git Snapshot
 - Branch: main
 - HEAD: 2026-05-15 b840e3a added new features section to index.html
+<<<<<<< HEAD
 - Working tree summary: clean
 - Working tree: clean
+=======
+- Working tree summary: 2 modifieds
+- M .janitor-audit-log
+- M index.html
+>>>>>>> 358a3e153bd7597f8c741e65343c4b29f0992f90
 
 ## GitHub Snapshot
 GitHub Repository: Debanshu2005/code-janitor-web
@@ -52,8 +68,13 @@ Visibility: public | Default branch: main
 Stars: 0 | Forks: 0 | Open issues: 0
 
 Latest commit on main:
+<<<<<<< HEAD
 - 358a3e1 by Debanshu2005 on 2026-05-16
   refactor: reorganize landing page layout and add workspace memory tracking
+=======
+- b840e3a by Debanshu2005 on 2026-05-15
+  added new features section to index.html
+>>>>>>> 358a3e153bd7597f8c741e65343c4b29f0992f90
 
 URL: https://github.com/Debanshu2005/code-janitor-web
 
