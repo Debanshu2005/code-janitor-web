@@ -1,0 +1,5 @@
+{
+    "codeJanitor.assistant.projectPlanner.enabled": false,
+    "codeJanitor.assistant.projectPlanner.preferredProvider": "nvidia",
+    "codeJanitor.assistant.projectPlanner.stagnationMinutes": 45
+}
